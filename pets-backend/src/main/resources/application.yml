@@ -34,3 +34,17 @@ spring:
     endpoint:
       prometheus:
         enabled: true
+
+keycloak:
+  server-url: http://localhost:8082
+  realm: pets-backend
+  client-id: pets-backend
+  username: admin
+  password: user!123
+
+logging:
+  level:
+    org:
+      keycloak: DEBUG
+      jboss:
+        resteasy: DEBUG

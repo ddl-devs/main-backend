@@ -23,6 +23,11 @@ public class SecurityConfig {
                         oauth2 -> oauth2.jwt(
                                 jwt -> jwt.jwtAuthenticationConverter(new JWTConverter())
                         )
+                )
+                .authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/users/**")
+                                .permitAll()
+                                .anyRequest().permitAll()
                 );
 
         return http.build();
