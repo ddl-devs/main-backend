@@ -25,7 +25,7 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/users/**")
+                        authorize.requestMatchers("/auth/**")
                                 .permitAll()
                                 .anyRequest().permitAll()
                 );
