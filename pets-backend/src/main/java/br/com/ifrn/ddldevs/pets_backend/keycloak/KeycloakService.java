@@ -115,6 +115,8 @@ public class KeycloakService {
             URI location = response.getLocation();
             String userId = location.getPath().replaceAll(".*/([^/]+)$", "$1");
 
+            // associate user role...
+
             UserRepresentation createdUser = keycloak.realm(realmName)
                     .users()
                     .get(userId)
