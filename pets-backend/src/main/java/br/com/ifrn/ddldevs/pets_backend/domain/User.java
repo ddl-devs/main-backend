@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,5 +41,8 @@ public class User {
 
     @Column(nullable = true)
     private String photoUrl;
+
+    @OneToMany(mappedBy = "user")
+    private List<Pet> pets;
 }
 
