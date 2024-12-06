@@ -1,16 +1,12 @@
 package br.com.ifrn.ddldevs.pets_backend.dto.Pet;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 //@Schema(description = "DTO para requisições de Pets")
@@ -41,6 +37,6 @@ public class PetRequestDTO {
     private String photoUrl;
 
     //@Schema(description = "ID do usuário dono", example = "1")
-    @NotBlank(message = "ID do dono é obrigatório")
+    @NotNull(message = "ID do dono é obrigatório")
     private Long user_id;
 }

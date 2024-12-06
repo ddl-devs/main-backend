@@ -30,7 +30,6 @@ public class PetService {
     @Transactional
     public PetResponseDTO createPet(PetRequestDTO petRequestDTO) {
         Pet pet = petMapper.toEntity(petRequestDTO);
-        System.out.println(petRequestDTO.getName() + petRequestDTO.getGender());
         User user = userRepository.findById(petRequestDTO.getUser_id())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
 

@@ -2,12 +2,12 @@ package br.com.ifrn.ddldevs.pets_backend.controller;
 
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.service.PetService;
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -16,15 +16,13 @@ public class PetController {
 
     @Autowired
     private PetService petService;
-    @Autowired
-    private PetRepository petRepository;
 
-    @PostMapping
-    public ResponseEntity<PetResponseDTO> createPet(@RequestBody PetRequestDTO petRequestDTO) {
+    @PostMapping("/")
+    public ResponseEntity<PetResponseDTO> createPet(@Valid @RequestBody PetRequestDTO petRequestDTO) {
         return ResponseEntity.ok(petService.createPet(petRequestDTO));
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<PetResponseDTO>> listPets(){
         return ResponseEntity.ok(petService.listPets());
     }

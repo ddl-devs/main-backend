@@ -29,9 +29,11 @@ public class Pet {
 
     private Integer age;
 
-    private Double weight;
-
     private String breed;
+
+    private String species;
+
+    private Double weight;
 
     private Integer height;
 
