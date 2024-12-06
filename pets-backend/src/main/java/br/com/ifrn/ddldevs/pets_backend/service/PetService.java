@@ -8,9 +8,12 @@ import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class PetService {
@@ -39,4 +42,36 @@ public class PetService {
 
         return petMapper.toPetResponseDTO(pet);
     }
+
+    public List<PetResponseDTO> listPets(){
+        List<Pet> pets = petRepository.findAll();
+        return petMapper.toDTOList(pets);
+    }
+
+    public PetResponseDTO updatePet(Long id, PetRequestDTO petRequestDTO) {
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Pet não encontrado"));
+
+        petMapper.updateEntityFromDTO(petRequestDTO, pet);
+        Pet petUpdated = petRepository.save(pet);
+
+        return petMapper.toPetResponseDTO(petUpdated);
+    }
+
+    public PetResponseDTO getPet(Long id) {
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Pet não encontrado"));
+
+        return petMapper.toPetResponseDTO(pet);
+    }
+
+    public void deletePet(Long id) {
+        if(!petRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Pet não encontrado");
+        }
+
+        petRepository.deleteById(id);
+    }
+
+
 }

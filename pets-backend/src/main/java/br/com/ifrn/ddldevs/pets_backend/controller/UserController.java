@@ -1,5 +1,6 @@
 package br.com.ifrn.ddldevs.pets_backend.controller;
 
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
@@ -49,5 +50,8 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @GetMapping("/{id}/pets")
+    public ResponseEntity<List<PetResponseDTO>> getPets(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getPets(id));
+    }
 }
