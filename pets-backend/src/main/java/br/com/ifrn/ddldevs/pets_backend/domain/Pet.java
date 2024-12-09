@@ -42,7 +42,7 @@ public class Pet {
     private String photoUrl;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
 }

@@ -3,7 +3,6 @@ package br.com.ifrn.ddldevs.pets_backend.dto.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import java.util.Date;
 
 @Data
@@ -38,5 +37,5 @@ public class PetRequestDTO {
 
     //@Schema(description = "ID do usuário dono", example = "1")
     @NotNull(message = "ID do dono é obrigatório")
-    private Long user_id;
+    private Long userId;
 }
