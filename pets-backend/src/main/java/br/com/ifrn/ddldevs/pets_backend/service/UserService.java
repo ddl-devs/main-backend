@@ -1,13 +1,18 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
+import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
 import br.com.ifrn.ddldevs.pets_backend.dto.KcUserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
+import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
+import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +30,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private PetMapper petMapper;
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO dto) {
@@ -67,5 +75,12 @@ public class UserService {
             throw new ResourceNotFoundException("Usuário não encontrado");
         }
         userRepository.deleteById(id);
+    }
+
+    public List<PetResponseDTO> getPets(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        return petMapper.toDTOList(user.getPets());
     }
 }
