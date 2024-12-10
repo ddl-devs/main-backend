@@ -1,6 +1,8 @@
 package br.com.ifrn.ddldevs.pets_backend.dto.Pet;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.Date;
@@ -8,34 +10,35 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@Schema(description = "DTO para requisições de Pets")
+@Schema(description = "DTO para requisições de Pets")
 public class PetRequestDTO {
 
-    //@Schema(description = "Nome do Pet", example = "Apolo")
+    @Schema(description = "Pet's name", example = "Apolo")
     private String name;
 
-    //@Schema(description = "Sexo do Pet", example = "MALE")
+    @Schema(description = "Pet's sex", example = "MALE")
     private Gender gender;
 
-    //@Schema(description = "Idade do Pet", example = "2")
+    @Schema(description = "Pet's age", example = "2")
     private Integer age;
 
-    //Schema(description = "Peso do Pet (Kg)", example = "2.5")
+    @Schema(description = "Pet's weight (kg)", example = "2.5")
     private Double weight;
 
-    //@Schema(description = "Raça do Pet", example = "Yorkshire")
+    @Schema(description = "Pet's breed", example = "Yorkshire")
     private String breed;
 
-    //@Schema(description = "Altura do Pet (Cm)", example = "30")
+    @Schema(description = "Pet's height (cm)", example = "30")
     private Integer height;
 
-    //@Schema(description = "Data de Nascimento do Pet", example = "2024-12-05T14:30:00Z")
+    @Schema(description = "Pet's birthdate", example = "2024-12-05T14:30:00Z")
     private Date dateOfBirth;
 
-    //@Schema(description = "Foto do Pet", example = "www.foto.com")
+    @Schema(description = "Pet's photo", example = "www.foto.com")
     private String photoUrl;
 
-    //@Schema(description = "ID do usuário dono", example = "1")
-    @NotNull(message = "ID do dono é obrigatório")
+    @Schema(description = "Pet's owner id", example = "1")
+    @NotNull(message = "Owner's id is mandatory")
+    @Valid
     private Long userId;
 }
