@@ -9,6 +9,7 @@ import br.com.ifrn.ddldevs.pets_backend.exception.KeycloakException;
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
@@ -103,19 +104,11 @@ public class KeycloakService {
 
         user.setCredentials(Collections.singletonList(credential));
 
-        try (Response response = keycloak.realm(realmName)
-                .users()
-                .create(user)) {
-
-            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
-                String responseBody = response.readEntity(String.class);
-                throw new RuntimeException("Error creating user: " + response.getStatus() + " - " + responseBody);
-            }
+        try{
+            Response response = keycloak.realm(realmName).users().create(user);
 
             URI location = response.getLocation();
             String userId = location.getPath().replaceAll(".*/([^/]+)$", "$1");
-
-            // associate user role...
 
             UserRepresentation createdUser = keycloak.realm(realmName)
                     .users()
@@ -129,6 +122,47 @@ public class KeycloakService {
                     createdUser.getFirstName(),
                     createdUser.getLastName()
             );
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating user: " + e.getMessage());
         }
+    }
+
+    public KcUserResponseDTO updateUser(String userId, UserRequestDTO dto) {
+        UserResource userResource = keycloak.realm(realmName)
+                .users()
+                .get(userId);
+
+        UserRepresentation user = userResource.toRepresentation();
+
+        user.setUsername(dto.username());
+        user.setEmail(dto.email());
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+
+        if (dto.password() != null && !dto.password().isEmpty()) {
+            CredentialRepresentation credential = new CredentialRepresentation();
+            credential.setType(CredentialRepresentation.PASSWORD);
+            credential.setValue(dto.password());
+            credential.setTemporary(false);
+
+            user.setCredentials(Collections.singletonList(credential));
+        }
+
+        try {
+            userResource.update(user);
+
+            UserRepresentation updatedUser = userResource.toRepresentation();
+
+            return new KcUserResponseDTO(
+                    updatedUser.getId(),
+                    updatedUser.getUsername(),
+                    updatedUser.getEmail(),
+                    updatedUser.getFirstName(),
+                    updatedUser.getLastName()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error while updating user: " + e.getMessage(), e);
+        }
+
     }
 }

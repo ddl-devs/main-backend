@@ -36,13 +36,12 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO dto) {
-//        KcUserResponseDTO keycloakUser = keycloakService.createUser(dto);
-//        user.setKeycloakId(keycloakUser.id());
+        KcUserResponseDTO keycloakUser = keycloakService.createUser(dto);
 
         User user = userMapper.toEntity(dto);
+        user.setKeycloakId(keycloakUser.id());
 
         userRepository.save(user);
-
         return userMapper.toResponseDTO(user);
     }
 
@@ -59,9 +58,12 @@ public class UserService {
         return userMapper.toResponseDTO(user);
     }
 
+    @Transactional
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
+
+        keycloakService.updateUser(dto.keycloakId(), dto);
 
         userMapper.updateEntityFromDTO(dto, user);
 
