@@ -40,7 +40,7 @@ keycloak:
   realm: pets-backend
   client-id: pets-backend
   username: admin
-  password: admin
+  password: user!123
 
 logging:
   level:
