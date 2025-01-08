@@ -1,9 +1,9 @@
 package br.com.ifrn.ddldevs.pets_backend.keycloak;
 
-import br.com.ifrn.ddldevs.pets_backend.dto.KcUserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.LoginRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.LogoutRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LoginRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LogoutRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.KeycloakException;
 
 import jakarta.ws.rs.core.Response;

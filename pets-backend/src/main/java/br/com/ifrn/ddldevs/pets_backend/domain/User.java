@@ -1,11 +1,13 @@
 package br.com.ifrn.ddldevs.pets_backend.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -36,8 +38,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @PastOrPresent
     @Column(nullable = true)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(nullable = true)
     private String photoUrl;
