@@ -127,26 +127,17 @@ public class KeycloakService {
         }
     }
 
-    public KcUserResponseDTO updateUser(String userId, UserRequestDTO dto) {
+    public KcUserResponseDTO updateUser(String keycloakId, UserRequestDTO dto) {
         UserResource userResource = keycloak.realm(realmName)
                 .users()
-                .get(userId);
+                .get(keycloakId);
+
 
         UserRepresentation user = userResource.toRepresentation();
 
-        user.setUsername(dto.username());
         user.setEmail(dto.email());
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
-
-        if (dto.password() != null && !dto.password().isEmpty()) {
-            CredentialRepresentation credential = new CredentialRepresentation();
-            credential.setType(CredentialRepresentation.PASSWORD);
-            credential.setValue(dto.password());
-            credential.setTemporary(false);
-
-            user.setCredentials(Collections.singletonList(credential));
-        }
 
         try {
             userResource.update(user);

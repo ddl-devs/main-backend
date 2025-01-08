@@ -63,7 +63,7 @@ public class UserService {
         User user = userRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
 
-        keycloakService.updateUser(dto.keycloakId(), dto);
+        keycloakService.updateUser(user.getKeycloakId(), dto);
 
         userMapper.updateEntityFromDTO(dto, user);
 
