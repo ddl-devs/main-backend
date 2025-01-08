@@ -3,11 +3,14 @@ package br.com.ifrn.ddldevs.pets_backend.domain;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -31,13 +34,16 @@ public class Pet {
 
     private String breed;
 
+    @Column(nullable = false)
     private String species;
 
+    @Positive(message = "Peso deve ser maior que zero")
     private Double weight;
 
     private Integer height;
 
-    private Date dateOfBirth;
+    @PastOrPresent
+    private LocalDate dateOfBirth;
 
     private String photoUrl;
 

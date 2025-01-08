@@ -1,16 +1,14 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
-import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
-import br.com.ifrn.ddldevs.pets_backend.dto.KcUserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
-import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

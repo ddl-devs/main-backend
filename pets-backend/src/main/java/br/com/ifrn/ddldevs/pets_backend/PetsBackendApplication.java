@@ -10,6 +10,7 @@ public class PetsBackendApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PetsBackendApplication.class, args);
+
     }
 
 }

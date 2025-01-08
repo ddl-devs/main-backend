@@ -1,7 +1,7 @@
 package br.com.ifrn.ddldevs.pets_backend.controller;
 
-import br.com.ifrn.ddldevs.pets_backend.dto.LoginRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.LogoutRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LoginRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LogoutRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 
 import org.springframework.beans.factory.annotation.Autowired;

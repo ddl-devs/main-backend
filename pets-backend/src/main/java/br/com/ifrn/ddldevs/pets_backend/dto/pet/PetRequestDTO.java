@@ -1,9 +1,11 @@
-package br.com.ifrn.ddldevs.pets_backend.dto.Pet;
+package br.com.ifrn.ddldevs.pets_backend.dto.pet;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import java.util.Date;
 
@@ -23,7 +25,14 @@ public class PetRequestDTO {
     private Integer age;
 
     @Schema(description = "Pet's weight (kg)", example = "2.5")
+    @Valid
+    @Positive
     private Double weight;
+
+    @Schema(description = "Pet's species")
+    @NotNull(message = "Pet's species is required!")
+    @Valid
+    private String species;
 
     @Schema(description = "Pet's breed", example = "Yorkshire")
     private String breed;
@@ -32,6 +41,8 @@ public class PetRequestDTO {
     private Integer height;
 
     @Schema(description = "Pet's birthdate", example = "2024-12-05T14:30:00Z")
+    @Valid
+    @PastOrPresent
     private Date dateOfBirth;
 
     @Schema(description = "Pet's photo", example = "www.foto.com")
