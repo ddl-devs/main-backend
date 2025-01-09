@@ -40,6 +40,7 @@ public class Pet {
     @Positive(message = "Peso deve ser maior que zero")
     private Double weight;
 
+    @Positive(message = "Altura (Cm) deve ser maior que zero")
     private Integer height;
 
     @PastOrPresent
