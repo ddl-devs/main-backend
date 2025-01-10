@@ -1,0 +1,109 @@
+package br.com.ifrn.ddldevs.pets_backend.service;
+
+import br.com.ifrn.ddldevs.pets_backend.domain.User;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
+import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
+import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private UserMapper userMapper;
+
+    @InjectMocks
+    UserService userService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void getAllUsersAndReturnAListOfSizeOne() {
+        User user = new User(1L, "1abc23", "john", "John", "Doe", "john" +
+                "@email" +
+                ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
+                new ArrayList<>());
+
+        when(userRepository.findAll()).thenReturn(List.of(user));
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(),
+                user.getUsername(),
+                user.getKeycloakId(),
+                user.getEmail(),
+                user.getFirstName(), user.getLastName(),
+                user.getDateOfBirth(), user.getPhotoUrl());
+        when(userMapper.toDTOList(List.of(user))).thenReturn(List.of(userResponseDTO));
+
+        List<UserResponseDTO> users = userService.listUsers();
+
+        assertEquals(1, users.size());
+    }
+
+    @Test
+    void getUserByIdTrue() {
+        User user = new User(1L, "1abc23", "john", "John", "Doe", "john" +
+                "@email" +
+                ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
+                new ArrayList<>());
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(),
+                user.getUsername(),
+                user.getKeycloakId(),
+                user.getEmail(),
+                user.getFirstName(), user.getLastName(),
+                user.getDateOfBirth(), user.getPhotoUrl());
+        when(userMapper.toResponseDTO(user)).thenReturn(userResponseDTO);
+
+        UserResponseDTO userById = userService.getUserById(1L);
+
+        assertEquals(user.getId(), userById.id());
+        assertNotNull(userById);
+    }
+
+    @Test
+    void getUserByIdFalse() {
+        when(userRepository.findById(3498L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> userService.getUserById(3498L));
+    }
+
+    @Test
+    void deleteUserTrue() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+
+        userService.deleteUser(1L);
+
+        verify(userRepository, times(1)).existsById(1L);
+        verify(userRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteUserNotFound() {
+        when(userRepository.existsById(3498L)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> userService.deleteUser(3498L));
+    }
+
+
+}
