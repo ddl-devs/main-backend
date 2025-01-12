@@ -28,11 +28,12 @@ jobs:
     - name: Cache Maven dependencies
       uses: actions/cache@v4
       with:
-        path: pets-backend/.m2/repository  # Adjust the cache path accordingly
+        path: pets-backend/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('pets-backend/**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
 
-    - name: Build with Maven
-      run: mvn clean verify -f pets-backend/pom.xml  # Running Maven in the pets-backend folder
+    - name: Run tests with Maven
+      run: mvn clean test -f pets-backend/pom.xml
+
 
