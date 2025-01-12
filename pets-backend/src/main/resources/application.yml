@@ -13,7 +13,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/pets-backend
     username: postgres
-    password: postgres
+    password: saasas
     driver-class-name: org.postgresql.Driver
 
   jpa:
