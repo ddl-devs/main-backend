@@ -1,14 +1,15 @@
 package br.com.ifrn.ddldevs.pets_backend.keycloak;
 
-import br.com.ifrn.ddldevs.pets_backend.dto.KcUserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.LoginRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.LogoutRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LoginRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LogoutRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.KeycloakException;
 
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
@@ -103,19 +104,11 @@ public class KeycloakService {
 
         user.setCredentials(Collections.singletonList(credential));
 
-        try (Response response = keycloak.realm(realmName)
-                .users()
-                .create(user)) {
-
-            if (response.getStatus() != Response.Status.CREATED.getStatusCode()) {
-                String responseBody = response.readEntity(String.class);
-                throw new RuntimeException("Error creating user: " + response.getStatus() + " - " + responseBody);
-            }
+        try{
+            Response response = keycloak.realm(realmName).users().create(user);
 
             URI location = response.getLocation();
             String userId = location.getPath().replaceAll(".*/([^/]+)$", "$1");
-
-            // associate user role...
 
             UserRepresentation createdUser = keycloak.realm(realmName)
                     .users()
@@ -129,6 +122,38 @@ public class KeycloakService {
                     createdUser.getFirstName(),
                     createdUser.getLastName()
             );
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating user: " + e.getMessage());
         }
+    }
+
+    public KcUserResponseDTO updateUser(String keycloakId, UserRequestDTO dto) {
+        UserResource userResource = keycloak.realm(realmName)
+                .users()
+                .get(keycloakId);
+
+
+        UserRepresentation user = userResource.toRepresentation();
+
+        user.setEmail(dto.email());
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+
+        try {
+            userResource.update(user);
+
+            UserRepresentation updatedUser = userResource.toRepresentation();
+
+            return new KcUserResponseDTO(
+                    updatedUser.getId(),
+                    updatedUser.getUsername(),
+                    updatedUser.getEmail(),
+                    updatedUser.getFirstName(),
+                    updatedUser.getLastName()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error while updating user: " + e.getMessage(), e);
+        }
+
     }
 }

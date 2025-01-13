@@ -1,16 +1,14 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
-import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
-import br.com.ifrn.ddldevs.pets_backend.dto.KcUserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
-import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +34,12 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO dto) {
-//        KcUserResponseDTO keycloakUser = keycloakService.createUser(dto);
-//        user.setKeycloakId(keycloakUser.id());
+        KcUserResponseDTO keycloakUser = keycloakService.createUser(dto);
 
         User user = userMapper.toEntity(dto);
+        user.setKeycloakId(keycloakUser.id());
 
         userRepository.save(user);
-
         return userMapper.toResponseDTO(user);
     }
 
@@ -59,9 +56,12 @@ public class UserService {
         return userMapper.toResponseDTO(user);
     }
 
+    @Transactional
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
+
+        keycloakService.updateUser(user.getKeycloakId(), dto);
 
         userMapper.updateEntityFromDTO(dto, user);
 

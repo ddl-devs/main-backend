@@ -1,13 +1,13 @@
 package br.com.ifrn.ddldevs.pets_backend.controller;
 
-import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.ws.rs.Path;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +39,7 @@ public class UserController {
 
     @Operation(summary = "Create new user")
     @PostMapping("/")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO body) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO body) {
         return ResponseEntity.ok(userService.createUser(body));
 //        return ResponseEntity.ok(keycloakService.createUser(body));
     }

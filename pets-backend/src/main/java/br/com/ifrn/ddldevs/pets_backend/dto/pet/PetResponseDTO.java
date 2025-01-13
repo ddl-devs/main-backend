@@ -1,8 +1,9 @@
-package br.com.ifrn.ddldevs.pets_backend.dto.Pet;
+package br.com.ifrn.ddldevs.pets_backend.dto.pet;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public record PetResponseDTO(
@@ -12,7 +13,8 @@ public record PetResponseDTO(
         @Schema(description = "Pet's age", example = "2")Integer age,
         @Schema(description = "Pet's weight (kg)", example = "2.5")Double weight,
         @Schema(description = "Pet's breed", example = "Yorkshire")String breed,
+        @Schema(description = "Pet's species", example = "Dog")String species,
         @Schema(description = "Pet's height (cm)", example = "30")Integer height,
-        @Schema(description = "Pet's birthdate", example = "2024-12-05T14:30:00Z")Date dateOfBirth,
+        @Schema(description = "Pet's birthdate", example = "2024-12-05T14:30:00Z") LocalDate dateOfBirth,
         @Schema(description = "Pet's photo", example = "www.foto.com") String photoUrl
 ){}
