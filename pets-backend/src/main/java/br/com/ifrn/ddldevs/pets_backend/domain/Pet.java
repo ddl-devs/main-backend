@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Setter
@@ -44,5 +45,4 @@ public class Pet {
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
-
 }
