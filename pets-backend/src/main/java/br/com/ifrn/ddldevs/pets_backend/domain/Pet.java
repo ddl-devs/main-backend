@@ -52,4 +52,12 @@ public class Pet {
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "pet")
+    @Column(insertable=false, updatable=false)
+    private List<PetAnalysis> petAnalysis;
+
+    @OneToMany(mappedBy = "pet")
+    @Column(insertable=false, updatable=false)
+    private List<Recommendation> recommendations;
 }
