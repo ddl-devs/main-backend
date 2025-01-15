@@ -1,4 +1,18 @@
 services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8081:8080"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+      - keycloak
+      - rabbitmq
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.5
     container_name: keycloak
@@ -47,6 +61,20 @@ services:
     depends_on:
       - prometheus
 
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pets-backend
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
 networks:
   backend:
     driver: bridge
@@ -54,3 +82,4 @@ networks:
 volumes:
   rabbitmq-data:
   keycloak-data:
+  postgres-data:
