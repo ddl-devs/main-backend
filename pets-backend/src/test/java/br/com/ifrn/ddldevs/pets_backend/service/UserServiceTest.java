@@ -132,8 +132,8 @@ public class UserServiceTest {
                 "Expected save to throw DataIntegrityViolationException, but it didn't"
         );
 
-        verify(userRepository, times(1)).save(existingUser);
-        verify(userRepository, times(1)).save(duplicateUser);
+        verify(userRepository).save(existingUser);
+        verify(userRepository).save(duplicateUser);
     }
 
     @Test
