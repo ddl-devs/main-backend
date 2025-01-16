@@ -2,7 +2,7 @@ package br.com.ifrn.ddldevs.pets_backend.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record UserResponseDTO(
         @Schema(description = "User's ID", example = "12") Long id,
@@ -11,7 +11,7 @@ public record UserResponseDTO(
         @Schema(description = "User's email", example = "user@gmail.com") String email,
         @Schema(description = "User's firstname", example = "user") String firstName,
         @Schema(description = "User's lastname", example = "silva")String lastName,
-        @Schema(description = "User's birthdate", example = "2024-12-05T14:30:00Z")Date dateOfBirth,
-        @Schema(description = "User's profile photo url", example = "aws.12bs.bucket.com")String photoUrl,
-        @Schema(description = "User's password", example = "test123")String password
+        @Schema(description = "User's birthdate", example = "2024-12-05T14:30" +
+                ":00Z") LocalDate dateOfBirth,
+        @Schema(description = "User's profile photo url", example = "aws.12bs.bucket.com")String photoUrl
 ){}
