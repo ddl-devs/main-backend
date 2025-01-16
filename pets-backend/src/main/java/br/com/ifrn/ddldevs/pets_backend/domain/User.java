@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -26,23 +25,21 @@ public class User {
     @Column(nullable = false, unique = true)
     private String keycloakId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String firstName;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String lastName;
 
     @Column(nullable = false, unique = true)
     private String email;
 
     @PastOrPresent
-    @Column(nullable = true)
     private LocalDate dateOfBirth;
 
-    @Column(nullable = true)
     private String photoUrl;
 
     @OneToMany(mappedBy = "user")
