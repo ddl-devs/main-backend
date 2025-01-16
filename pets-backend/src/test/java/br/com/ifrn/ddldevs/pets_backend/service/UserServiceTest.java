@@ -9,9 +9,6 @@ import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
 import jakarta.validation.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -36,15 +33,6 @@ public class UserServiceTest {
     @Mock
     private UserMapper userMapper;
 
-    @Mock
-    private Keycloak keycloak;
-
-    @Mock
-    private RealmResource realmResource;
-
-    @Mock
-    private UsersResource usersResource;
-
     private Validator validator;
 
     @InjectMocks
@@ -53,8 +41,6 @@ public class UserServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        when(keycloak.realm("pets-backend")).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
