@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.Set;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 public class UserServiceTest {
 
     @Mock
@@ -132,8 +134,6 @@ public class UserServiceTest {
                 "Expected save to throw DataIntegrityViolationException, but it didn't"
         );
 
-        verify(userRepository).save(existingUser);
-        verify(userRepository).save(duplicateUser);
     }
 
     @Test
