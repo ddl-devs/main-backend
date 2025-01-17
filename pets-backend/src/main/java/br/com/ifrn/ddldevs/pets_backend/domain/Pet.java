@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
+
+import java.util.List;
 
 @Entity
 @Setter
@@ -49,7 +51,14 @@ public class Pet {
     private String photoUrl;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "pet")
+    @Column(insertable=false, updatable=false)
+    private List<PetAnalysis> petAnalysis = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pet")
+    @Column(insertable=false, updatable=false)
+    private List<Recommendation> recommendations = new ArrayList<>();
 }
