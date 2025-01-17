@@ -22,7 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class RecommendationServiceTest {
+class RecommendationsServiceTest {
 
     @Mock
     private RecommendationRepository recommendationRepository;
@@ -91,9 +91,11 @@ class RecommendationServiceTest {
     void deleteRecommendationWithInvalidId() {
         when(recommendationRepository.existsById(999L)).thenReturn(false);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> recommendationService.deleteRecommendation(999L));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                recommendationService.deleteRecommendation(999L)
+        );
 
-        assertEquals("Recommendation not found", exception.getMessage());
+        assertEquals("Recomendação não encontrada!", exception.getMessage());
 
         verify(recommendationRepository, never()).deleteById(anyLong());
     }

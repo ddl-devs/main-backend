@@ -1,11 +1,11 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
-import br.com.ifrn.ddldevs.pets_backend.controller.RecommendationController;
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.Recommendation;
 import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationResponseDTO;
 
+import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.RecommendationMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.RecommendationRepository;
@@ -54,6 +54,9 @@ public class RecommendationService {
     }
 
     public void deleteRecommendation(Long id) {
+        if (!recommendationRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recomendação não encontrada!");
+        }
         recommendationRepository.deleteById(id);
     }
 

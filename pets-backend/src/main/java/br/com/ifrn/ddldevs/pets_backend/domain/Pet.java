@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
+
 import java.util.List;
 
 @Entity
@@ -59,5 +60,5 @@ public class Pet {
 
     @OneToMany(mappedBy = "pet")
     @Column(insertable=false, updatable=false)
-    private List<Recommendation> recommendations;
+    private List<Recommendation> recommendations = new ArrayList<>();
 }
