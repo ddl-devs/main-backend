@@ -4,6 +4,7 @@ import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.PetAnalysis;
 import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetAnalysisMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetAnalysisRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
@@ -88,9 +89,11 @@ class PetAnalysisServiceTest {
     void deletePetAnalysisWithInvalidId() {
         when(petAnalysisRepository.existsById(999L)).thenReturn(false);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> petAnalysisService.deletePetAnalysis(999L));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                petAnalysisService.deletePetAnalysis(999L)
+        );
 
-        assertEquals("Pet Analysis not found", exception.getMessage());
+        assertEquals("Análise não encontrada!", exception.getMessage());
 
         verify(petAnalysisRepository, never()).deleteById(anyLong());
     }

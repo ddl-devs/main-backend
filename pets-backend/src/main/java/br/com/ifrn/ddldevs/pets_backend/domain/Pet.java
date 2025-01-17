@@ -56,7 +56,7 @@ public class Pet {
 
     @OneToMany(mappedBy = "pet")
     @Column(insertable=false, updatable=false)
-    private List<PetAnalysis> petAnalysis;
+    private List<PetAnalysis> petAnalysis = new ArrayList<>();
 
     @OneToMany(mappedBy = "pet")
     @Column(insertable=false, updatable=false)

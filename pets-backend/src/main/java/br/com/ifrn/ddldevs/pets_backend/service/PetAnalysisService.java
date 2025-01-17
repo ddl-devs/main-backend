@@ -5,6 +5,7 @@ import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.PetAnalysis;
 import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetAnalysisMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetAnalysisRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
@@ -50,6 +51,9 @@ public class PetAnalysisService {
     }
 
     public void deletePetAnalysis(Long id) {
+        if (!petAnalysisRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Análise não encontrada!");
+        }
         petAnalysisRepository.deleteById(id);
     }
 
