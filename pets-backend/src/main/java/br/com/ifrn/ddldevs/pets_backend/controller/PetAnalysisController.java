@@ -48,4 +48,11 @@ public class PetAnalysisController {
     public List<PetAnalysisResponseDTO> getPetAnalysisByPetId(@PathVariable Long id) {
         return petAnalysisService.getAllByPetId(id);
     }
+
+    @GetMapping("user/{id}")
+    @Operation(summary = "Get Pet Analysis by user id")
+    public List<PetAnalysisResponseDTO> getPetAnalysisByUserId(@PathVariable Long id) {
+        return petAnalysisService.getAllByUserId(id);
+    }
+
 }

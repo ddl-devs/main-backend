@@ -23,11 +23,11 @@ public class RecommendationRequestDTO {
     private Long petId;
 
     @Schema(description = "Details of the recommendation", example = "Feed your pet twice daily")
-    @NotBlank
+    @NotNull
     private String recommendation;
 
     @Schema(description = "Category of the recommendation", example = "Nutrition")
-    @NotBlank
+    @NotNull
     private String categorieRecommendation;
 
     @Schema(description = "Date and time of the recommendation", example = "2024-12-05T14:30:00Z")

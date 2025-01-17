@@ -19,10 +19,13 @@ public class PetAnalysisRequestDTO {
     @NotNull
     @Valid
     private Long petId;
+    @NotNull
     @Schema(description = "Picture URL", example = "http://example.com/pet-analysis/picture.jpg")
     private String picture;
+    @NotNull
     @Schema(description = "Result of the Analysis", example = "Healthy")
     private String result;
+    @NotNull
     @Schema(description = "Type of the Analysis", example = "Blood Test")
     private String analysisType;
 

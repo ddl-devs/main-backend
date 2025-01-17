@@ -49,4 +49,10 @@ public class RecommendationController {
         return recommendationService.getAllByPetId(id);
     }
 
+    @GetMapping("user/{id}")
+    @Operation(summary = "Get recommendations by user id")
+    public List<RecommendationResponseDTO> getRecommendationsByUserId(@PathVariable Long id) {
+        return recommendationService.getAllByUserId(id);
+    }
+
 }

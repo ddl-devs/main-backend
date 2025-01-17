@@ -1,7 +1,5 @@
 package br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis;
 
-import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
-import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record PetAnalysisResponseDTO(

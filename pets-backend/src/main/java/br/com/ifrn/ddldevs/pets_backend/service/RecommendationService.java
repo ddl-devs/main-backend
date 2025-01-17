@@ -61,4 +61,9 @@ public class RecommendationService {
         List<Recommendation> recommendations = recommendationRepository.findAllByPetId(id);
         return recommendationMapper.toDTOList(recommendations);
     }
+
+    public List<RecommendationResponseDTO> getAllByUserId(Long id) {
+        List<Recommendation> recommendations = recommendationRepository.findAllByUserId(id);
+        return recommendationMapper.toDTOList(recommendations);
+    }
 }
