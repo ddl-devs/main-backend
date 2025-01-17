@@ -11,7 +11,7 @@ spring:
           jwk-set-uri: http://localhost:8082/realms/pets-backend/protocol/openid-connect/certs
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/pets-backend
+    url: jdbc:postgresql://postgres:5432/pets-backend
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
