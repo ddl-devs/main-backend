@@ -3,8 +3,6 @@ package br.com.ifrn.ddldevs.pets_backend.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 
 @Entity
 @Setter
@@ -18,7 +16,7 @@ public class PetAnalysis {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "petId", nullable = false)
+    @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
 
     @Column(nullable = false)

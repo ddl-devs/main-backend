@@ -1,7 +1,6 @@
 package br.com.ifrn.ddldevs.pets_backend.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class Recommendation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "petId", nullable = false)
+    @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
 
     @Column(nullable = false)

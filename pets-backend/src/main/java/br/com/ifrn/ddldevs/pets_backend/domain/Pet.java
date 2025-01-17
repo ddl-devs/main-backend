@@ -51,7 +51,7 @@ public class Pet {
     private String photoUrl;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "pet")
