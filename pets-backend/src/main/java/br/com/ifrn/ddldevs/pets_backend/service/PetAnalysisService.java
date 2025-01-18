@@ -32,6 +32,14 @@ public class PetAnalysisService {
 
     @Transactional
     public PetAnalysisResponseDTO createPetAnalysis(PetAnalysisRequestDTO petAnalysisRequestDTO) {
+        Long idPet = petAnalysisRequestDTO.getPetId();
+        if (idPet == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (idPet < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         PetAnalysis petAnalysis = petAnalysisMapper.toEntity(petAnalysisRequestDTO);
         Pet pet = petRepository.findById(petAnalysisRequestDTO.getPetId())
                 .orElseThrow(() -> new RuntimeException("Pet not found"));
@@ -51,6 +59,12 @@ public class PetAnalysisService {
     }
 
     public void deletePetAnalysis(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
         if (!petAnalysisRepository.existsById(id)) {
             throw new ResourceNotFoundException("Análise não encontrada!");
         }
@@ -58,17 +72,36 @@ public class PetAnalysisService {
     }
 
     public List<PetAnalysisResponseDTO> getAllByPetId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         List<PetAnalysis> petAnalyses = petAnalysisRepository.findAllByPetId(id);
         return petAnalysisMapper.toResponseList(petAnalyses);
     }
     
     public PetAnalysisResponseDTO getPetAnalysis(Long analysisId) {
+        if (analysisId == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (analysisId < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
         PetAnalysis petAnalysis = petAnalysisRepository.findById(analysisId)
                 .orElseThrow(() -> new EntityNotFoundException("Pet Analysis not found"));
         return petAnalysisMapper.toResponse(petAnalysis);
     }
 
     public List<PetAnalysisResponseDTO> getAllByUserId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
         List<PetAnalysis> petAnalysis = petAnalysisRepository.findAllByUserId(id);
         return petAnalysisMapper.toResponseList(petAnalysis);
     }
