@@ -174,10 +174,27 @@ class PetAnalysisServiceTest {
 
     // e
 
-//    @Test
-//    void getPetAnalysesWithValidId() {
-//        // só faltou esse aqui
-//    }
+    @Test
+    void getPetAnalysesWithValidId() {
+        PetAnalysis analyses = new PetAnalysis();
+        analyses.setId(1L);
+        analyses.setPet(new Pet());
+        analyses.setAnalysisType("Blood Test");
+        analyses.setResult("Healthy");
+        analyses.setPicture("http://example.com/picture.jpg");
+
+        PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(
+                1L, "http://example.com/picture.jpg",
+                "Healthy", "Blood Test");
+
+        when(petAnalysisRepository.findById(1L)).thenReturn(Optional.of(analyses));
+        when(petAnalysisMapper.toResponse(analyses)).thenReturn(responseDTO);
+
+        PetAnalysisResponseDTO result = petAnalysisService.getPetAnalysis(1L);
+
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+    }
 
     @Test
     void getPetAnalysesWithInvalidId() {

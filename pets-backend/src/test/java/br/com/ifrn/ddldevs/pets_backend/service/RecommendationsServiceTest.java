@@ -119,10 +119,20 @@ class RecommendationsServiceTest {
 
     // c
 
-//    @Test
-//    void getRecommendationByUserWithValidId() {
-//        // só falta continuar esse aqui...
-//    }
+    @Test
+    void getRecommendationByUserWithValidId() {
+        List<Recommendation> recommendations = new ArrayList<>();
+        recommendations.add(new Recommendation());
+
+        when(recommendationRepository.findAllByUserId(1L)).thenReturn(recommendations);
+        when(recommendationMapper.toDTOList(recommendations)).thenReturn(new ArrayList<>());
+
+        List<RecommendationResponseDTO> response = recommendationService.getAllByUserId(1L);
+
+        assertNotNull(response);
+        verify(recommendationRepository).findAllByUserId(1L);
+
+    }
 
     @Test
     void getRecommendationByUserWithInvalidId() {
@@ -141,7 +151,7 @@ class RecommendationsServiceTest {
     // d
 
     @Test
-    void getAllRecommendationsByPetIdWithValidId() {
+    void getRecommendationsByPetIdWithValidId() {
         List<Recommendation> recommendations = new ArrayList<>();
         recommendations.add(new Recommendation());
 
