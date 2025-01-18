@@ -166,6 +166,7 @@ public class UserServiceTest {
                 () -> userService.updateUser(-1L, userRequestDTO),
                 "ID não pode ser negativo");
     }
+
     // c
 
     @Test

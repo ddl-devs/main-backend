@@ -48,6 +48,13 @@ public class PetService {
     }
 
     public PetResponseDTO updatePet(Long id, PetRequestDTO petRequestDTO) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Pet não encontrado"));
 
@@ -58,6 +65,13 @@ public class PetService {
     }
 
     public PetResponseDTO getPet(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Pet não encontrado"));
 
@@ -65,6 +79,12 @@ public class PetService {
     }
 
     public void deletePet(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
         if(!petRepository.existsById(id)) {
             throw new ResourceNotFoundException("Pet não encontrado");
         }
