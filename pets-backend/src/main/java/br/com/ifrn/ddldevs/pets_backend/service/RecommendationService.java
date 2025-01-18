@@ -29,6 +29,14 @@ public class RecommendationService {
 
     @Transactional
     public RecommendationResponseDTO createRecommendation(RecommendationRequestDTO recommendationRequestDTO) {
+        Long idPet = recommendationRequestDTO.getPetId();
+        if (idPet == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (idPet < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         Recommendation recommendation = recommendationMapper.toEntity(recommendationRequestDTO);
         Pet pet = petRepository.findById(recommendationRequestDTO.getPetId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -48,12 +56,26 @@ public class RecommendationService {
     }
 
     public RecommendationResponseDTO getRecommendation(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         Recommendation recommendation = recommendationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Recommendation not found"));
         return recommendationMapper.toRecommendationResponseDTO(recommendation);
     }
 
     public void deleteRecommendation(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         if (!recommendationRepository.existsById(id)) {
             throw new ResourceNotFoundException("Recomendação não encontrada!");
         }
@@ -61,11 +83,25 @@ public class RecommendationService {
     }
 
     public List<RecommendationResponseDTO> getAllByPetId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         List<Recommendation> recommendations = recommendationRepository.findAllByPetId(id);
         return recommendationMapper.toDTOList(recommendations);
     }
 
     public List<RecommendationResponseDTO> getAllByUserId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         List<Recommendation> recommendations = recommendationRepository.findAllByUserId(id);
         return recommendationMapper.toDTOList(recommendations);
     }
