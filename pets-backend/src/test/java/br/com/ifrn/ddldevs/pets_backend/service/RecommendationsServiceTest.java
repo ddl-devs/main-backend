@@ -4,7 +4,6 @@ import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.Recommendation;
 import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.RecommendationMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.RecommendationRepository;
@@ -68,17 +67,32 @@ class RecommendationsServiceTest {
     }
 
     @Test
-    void createRecommendationWithInvalidPet() {
-        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(999L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+    void createRecommendationWithInvalidIdPet() {
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(-1L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
 
-        when(petRepository.findById(999L)).thenReturn(Optional.empty());
+        when(petRepository.findById(-1L)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> recommendationService.createRecommendation(requestDTO));
 
-        assertEquals("User not found", exception.getMessage());
+        assertEquals("ID não pode ser negativo", exception.getMessage());
 
         verify(recommendationRepository, never()).save(any(Recommendation.class));
     }
+
+    @Test
+    void createRecommendationWithNullIDPet() {
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(null, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+
+        when(petRepository.findById(null)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> recommendationService.createRecommendation(requestDTO));
+
+        assertEquals("ID não pode ser nulo", exception.getMessage());
+
+        verify(recommendationRepository, never()).save(any(Recommendation.class));
+    }
+
+    // b
 
     @Test
     void deleteRecommendationWithValidId() {
@@ -90,17 +104,81 @@ class RecommendationsServiceTest {
     }
 
     @Test
-    void deleteRecommendationWithInvalidId() {
-        when(recommendationRepository.existsById(999L)).thenReturn(false);
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-                recommendationService.deleteRecommendation(999L)
-        );
-
-        assertEquals("Recomendação não encontrada!", exception.getMessage());
-
-        verify(recommendationRepository, never()).deleteById(anyLong());
+    void deleteRecommendationWithIdNull() {
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.deleteRecommendation(null),
+                "ID não pode ser nulo");
     }
+
+    @Test
+    void deleteRecommendationWithInvalidId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.deleteRecommendation(-1L),
+                "ID não pode ser negativo");
+    }
+
+    // c
+
+    @Test
+    void getRecommendationByUserWithValidId() {
+        List<Recommendation> recommendations = new ArrayList<>();
+        recommendations.add(new Recommendation());
+
+        when(recommendationRepository.findAllByUserId(1L)).thenReturn(recommendations);
+        when(recommendationMapper.toDTOList(recommendations)).thenReturn(new ArrayList<>());
+
+        List<RecommendationResponseDTO> response = recommendationService.getAllByUserId(1L);
+
+        assertNotNull(response);
+        verify(recommendationRepository).findAllByUserId(1L);
+
+    }
+
+    @Test
+    void getRecommendationByUserWithInvalidId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.getAllByUserId(-1L),
+                "ID não pode ser negativo");
+    }
+
+    @Test
+    void getRecommendationByUserWithNullId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.getAllByUserId(null),
+                "ID não pode ser nulo");
+    }
+
+    // d
+
+    @Test
+    void getRecommendationsByPetIdWithValidId() {
+        List<Recommendation> recommendations = new ArrayList<>();
+        recommendations.add(new Recommendation());
+
+        when(recommendationRepository.findAllByPetId(1L)).thenReturn(recommendations);
+        when(recommendationMapper.toDTOList(recommendations)).thenReturn(new ArrayList<>());
+
+        List<RecommendationResponseDTO> response = recommendationService.getAllByPetId(1L);
+
+        assertNotNull(response);
+        verify(recommendationRepository).findAllByPetId(1L);
+    }
+
+    @Test
+    void getRecommendationByPetWithInvalidId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.getAllByPetId(-1L),
+                "ID não pode ser negativo");
+    }
+
+    @Test
+    void getRecommendationByPetWithNullId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.getAllByPetId(null),
+                "ID não pode ser nulo");
+    }
+
+    // e
 
     @Test
     void getRecommendationWithValidId() {
@@ -124,33 +202,16 @@ class RecommendationsServiceTest {
 
     @Test
     void getRecommendationWithInvalidId() {
-        when(recommendationRepository.findById(999L)).thenReturn(Optional.empty());
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> recommendationService.getRecommendation(999L));
-
-        assertEquals("Recommendation not found", exception.getMessage());
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.getRecommendation(-1L),
+                "ID não pode ser negativo");
     }
 
     @Test
-    void getAllRecommendationsByPetIdWithValidId() {
-        List<Recommendation> recommendations = new ArrayList<>();
-        recommendations.add(new Recommendation());
-
-        when(recommendationRepository.findAllByPetId(1L)).thenReturn(recommendations);
-        when(recommendationMapper.toDTOList(recommendations)).thenReturn(new ArrayList<>());
-
-        List<RecommendationResponseDTO> response = recommendationService.getAllByPetId(1L);
-
-        assertNotNull(response);
-        verify(recommendationRepository).findAllByPetId(1L);
+    void getRecommentationWithNullId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> recommendationService.getRecommendation(null),
+                "ID não pode ser nulo");
     }
 
-    @Test
-    void getAllRecommendationsByPetIdWithInvalidId() {
-        when(recommendationRepository.findAllByPetId(999L)).thenReturn(new ArrayList<>());
-
-        List<RecommendationResponseDTO> response = recommendationService.getAllByPetId(999L);
-
-        assertTrue(response.isEmpty());
-    }
 }

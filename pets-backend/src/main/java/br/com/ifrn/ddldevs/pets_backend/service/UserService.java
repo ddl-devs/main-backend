@@ -50,6 +50,13 @@ public class UserService {
     }
 
     public UserResponseDTO getUserById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         User user = userRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
 
@@ -58,6 +65,13 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
+
         User user = userRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
 
@@ -71,6 +85,12 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID não pode ser nulo");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("ID não pode ser negativo");
+        }
         if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("Usuário não encontrado");
         }

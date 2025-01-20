@@ -14,7 +14,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -192,6 +191,8 @@ class PetServiceTest {
         verify(petRepository, never()).save(any(Pet.class));
     }
 
+    // b
+
     @Test
     void updatePetSuccessful() {
         Long petId = 1L;
@@ -258,25 +259,32 @@ class PetServiceTest {
     }
 
     @Test
-    void updatePetWithInvalidId() {
-        Long invalidId = 999L;
-        PetRequestDTO updatedDTO = new PetRequestDTO();
-        updatedDTO.setName("Apolo");
-        updatedDTO.setSpecies("Dog");
-        updatedDTO.setHeight(30);
-        updatedDTO.setWeight(10.0);
+    void updatePetNullId() {
+        PetRequestDTO updatedPetDto = new PetRequestDTO();
+        updatedPetDto.setName("Apolo");
+        updatedPetDto.setSpecies("Dog");
+        updatedPetDto.setHeight(30);
+        updatedPetDto.setWeight(10.0);
 
-        when(petRepository.findById(invalidId)).thenReturn(Optional.empty());
-
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> petService.updatePet(invalidId, updatedDTO)
-        );
-
-        assertEquals("Pet não encontrado", exception.getMessage());
-
-        verify(petRepository, never()).save(any(Pet.class));
+        assertThrows(IllegalArgumentException.class,
+                () -> petService.updatePet(null,updatedPetDto),
+                "ID não pode ser nulo");
     }
+
+    @Test
+    void updatePetInvalidId() {
+        PetRequestDTO updatedPetDto = new PetRequestDTO();
+        updatedPetDto.setName("Apolo");
+        updatedPetDto.setSpecies("Dog");
+        updatedPetDto.setHeight(30);
+        updatedPetDto.setWeight(10.0);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> petService.updatePet(-1L,updatedPetDto),
+                "ID não pode ser nulo");
+    }
+
+    // c
 
     @Test
     void getPetWithValidId() {
@@ -315,20 +323,20 @@ class PetServiceTest {
     }
 
     @Test
-    void getPetWithInvalidId() {
-        Long invalidId = 999L;
-
-        when(petRepository.findById(invalidId)).thenReturn(Optional.empty());
-
-        NotFoundException exception = assertThrows(
-                NotFoundException.class,
-                () -> petService.getPet(invalidId)
-        );
-
-        assertEquals("Pet não encontrado", exception.getMessage());
-
-        verify(petMapper, never()).toPetResponseDTO(any(Pet.class));
+    void getPetByIdNullId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> petService.getPet(null),
+                "ID não pode ser nulo");
     }
+
+    @Test
+    void getPetByIdFalseInvalidId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> petService.getPet(-1L),
+                "ID não pode ser negativo");
+    }
+
+    // d
 
     @Test
     void deletePetWithValidId() {
@@ -342,18 +350,16 @@ class PetServiceTest {
     }
 
     @Test
+    void deletePetWithIdNull() {
+        assertThrows(IllegalArgumentException.class,
+                () -> petService.deletePet(null),
+                "ID não pode ser nulo");
+    }
+
+    @Test
     void deletePetWithInvalidId() {
-        Long invalidId = 999L;
-
-        when(petRepository.existsById(invalidId)).thenReturn(false);
-
-        ResourceNotFoundException exception = assertThrows(
-                ResourceNotFoundException.class,
-                () -> petService.deletePet(invalidId)
-        );
-
-        assertEquals("Pet não encontrado", exception.getMessage());
-
-        verify(petRepository, never()).deleteById(anyLong());
+        assertThrows(IllegalArgumentException.class,
+                () -> petService.deletePet(-1L),
+                "ID não pode ser negativo");
     }
 }

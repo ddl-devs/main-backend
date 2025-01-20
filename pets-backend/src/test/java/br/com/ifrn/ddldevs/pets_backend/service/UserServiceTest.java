@@ -3,7 +3,6 @@ package br.com.ifrn.ddldevs.pets_backend.service;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
 import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
 import jakarta.validation.*;
@@ -17,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -142,25 +140,31 @@ public class UserServiceTest {
     // b
 
     @Test
-    void getAllUsersAndReturnAListOfSizeOne() {
-        User user = new User(1L, "1abc23", "john", "John", "Doe", "john" +
-                "@email" +
-                ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
-                new ArrayList<>());
+    void updateUserNullId() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO(
+                "john", "1abc23", "john@email.com",
+                "John", "Doe",
+                LocalDate.of(1990, 1, 15),
+                "aws.12bs.bucket.com", "user!123"
+        );
 
-        when(userRepository.findAll()).thenReturn(List.of(user));
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.updateUser(null, userRequestDTO),
+                "ID não pode ser nulo");
+    }
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(),
-                user.getUsername(),
-                user.getKeycloakId(),
-                user.getEmail(),
-                user.getFirstName(), user.getLastName(),
-                user.getDateOfBirth(), user.getPhotoUrl());
-        when(userMapper.toDTOList(List.of(user))).thenReturn(List.of(userResponseDTO));
+    @Test
+    void updateUserInvalidId() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO(
+                "john", "1abc23", "john@email.com",
+                "John", "Doe",
+                LocalDate.of(1990, 1, 15),
+                "aws.12bs.bucket.com", "user!123"
+        );
 
-        List<UserResponseDTO> users = userService.listUsers();
-
-        assertEquals(1, users.size());
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.updateUser(-1L, userRequestDTO),
+                "ID não pode ser negativo");
     }
 
     // c
@@ -188,11 +192,17 @@ public class UserServiceTest {
     }
 
     @Test
-    void getUserByIdFalse() {
-        when(userRepository.findById(3498L)).thenReturn(Optional.empty());
+    void getUserByIdNullId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.getUserById(null),
+                "ID não pode ser nulo");
+    }
 
-        assertThrows(ResourceNotFoundException.class,
-                () -> userService.getUserById(3498L));
+    @Test
+    void getUserByIdFalseInvalidId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.getUserById(-1L),
+                "ID não pode ser negativo");
     }
 
     // d
@@ -208,10 +218,16 @@ public class UserServiceTest {
     }
 
     @Test
-    void deleteUserNotFound() {
-        when(userRepository.existsById(3498L)).thenReturn(false);
+    void deleteUserWithIdNull() {
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.deleteUser(null),
+                "ID não pode ser nulo");
+    }
 
-        assertThrows(ResourceNotFoundException.class,
-                () -> userService.deleteUser(3498L));
+    @Test
+    void deleteUserWithInvalidId() {
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.deleteUser(-1L),
+                "ID não pode ser negativo");
     }
 }
