@@ -1,26 +1,36 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
-import br.com.ifrn.ddldevs.pets_backend.domain.User;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
-import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
-import jakarta.validation.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.context.ActiveProfiles;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ActiveProfiles;
+
+import br.com.ifrn.ddldevs.pets_backend.domain.User;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
+import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 @ActiveProfiles("test")
 public class UserServiceTest {
@@ -125,7 +135,7 @@ public class UserServiceTest {
         UserRequestDTO userRequestDTO = new UserRequestDTO(
                 "john", "1abc23", "john@email.com",
                 "John", "Doe",
-                LocalDate.of(2015, 1, 15),
+                LocalDate.of(2016, 1, 15),
                 "aws.12bs.bucket.com", "user!123"
         );
 
@@ -134,7 +144,7 @@ public class UserServiceTest {
 
         assertFalse(violations.isEmpty(), "Expected validation errors");
         assertEquals(1, violations.size());
-        assertEquals("Usuário tem que ter pelo menos 13 anos", violations.iterator().next().getMessage());
+        assertEquals("Usuário tem que ter pelo menos 10 anos", violations.iterator().next().getMessage());
     }
 
     // b

@@ -1,10 +1,10 @@
 package br.com.ifrn.ddldevs.pets_backend.validator;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
 import java.time.LocalDate;
 import java.time.Period;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class AgeValidator implements ConstraintValidator<MinAge, LocalDate> {
 
@@ -23,6 +23,6 @@ public class AgeValidator implements ConstraintValidator<MinAge, LocalDate> {
         LocalDate now = LocalDate.now();
         int age = Period.between(dateOfBirth, now).getYears();
 
-        return age >= 13;
+        return age >= 10;
     }
 }

@@ -1,5 +1,25 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
+
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.Recommendation;
 import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationRequestDTO;
@@ -7,20 +27,6 @@ import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationResponse
 import br.com.ifrn.ddldevs.pets_backend.mapper.RecommendationMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.RecommendationRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 class RecommendationsServiceTest {
@@ -47,7 +53,7 @@ class RecommendationsServiceTest {
         Pet pet = new Pet();
         pet.setId(1L);
 
-        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(1L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(1L, "Feed your pet twice daily", "Nutrition");
         Recommendation recommendation = new Recommendation();
         RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
 
@@ -68,7 +74,7 @@ class RecommendationsServiceTest {
 
     @Test
     void createRecommendationWithInvalidIdPet() {
-        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(-1L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(-1L, "Feed your pet twice daily", "Nutrition");
 
         when(petRepository.findById(-1L)).thenReturn(Optional.empty());
 
@@ -81,7 +87,7 @@ class RecommendationsServiceTest {
 
     @Test
     void createRecommendationWithNullIDPet() {
-        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(null, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(null, "Feed your pet twice daily", "Nutrition");
 
         when(petRepository.findById(null)).thenReturn(Optional.empty());
 

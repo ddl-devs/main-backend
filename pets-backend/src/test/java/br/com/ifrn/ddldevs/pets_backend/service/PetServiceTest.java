@@ -1,5 +1,31 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
 import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetRequestDTO;
@@ -8,27 +34,10 @@ import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ActiveProfiles;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Set;
 
 
 @ActiveProfiles("test")
@@ -90,7 +99,6 @@ class PetServiceTest {
                 pet.getId(),
                 pet.getName(),
                 pet.getGender(),
-                pet.getAge(),
                 pet.getWeight(),
                 pet.getBreed(),
                 pet.getSpecies(),
@@ -131,18 +139,20 @@ class PetServiceTest {
         Set<ConstraintViolation<PetRequestDTO>> violations = validator.validate(dto);
 
         assertFalse(violations.isEmpty());
-        assertEquals(8, violations.size());
+        assertEquals(9, violations.size());
 
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("name") && v.getMessage()
-                .contains("must not be blank")));
+                .contains("Pet's name must not be blank")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("weight") && v.getMessage()
-                .contains("must be greater than 0")));
+                .contains("Weight must be greater than zero")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("species") && v.getMessage()
-                .contains("must not be blank")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("breed") && v.getMessage()
-                .contains("must not be blank")));
+                .contains("Pet's species must not be blank")));
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("height") && v.getMessage()
-                .contains("must be greater than 0")));
+                .contains("Height must be greater than zero")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("dateOfBirth") && v.getMessage()
+                .contains("Date of birth must be in the past or present")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("userId") && v.getMessage()
+                .contains("Owner's id is mandatory")));
     }
 
     @Test
@@ -222,7 +232,6 @@ class PetServiceTest {
                 "Apolo",
                 null,
                 null,
-                10.0,
                 null,
                 "Dog",
                 30,
@@ -300,7 +309,6 @@ class PetServiceTest {
                 pet.getId(),
                 pet.getName(),
                 pet.getGender(),
-                pet.getAge(),
                 pet.getWeight(),
                 pet.getBreed(),
                 pet.getSpecies(),

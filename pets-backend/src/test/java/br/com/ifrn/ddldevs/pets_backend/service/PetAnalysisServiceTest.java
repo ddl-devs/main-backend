@@ -1,24 +1,31 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
-import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
-import br.com.ifrn.ddldevs.pets_backend.domain.PetAnalysis;
-import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.mapper.PetAnalysisMapper;
-import br.com.ifrn.ddldevs.pets_backend.repository.PetAnalysisRepository;
-import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ActiveProfiles;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
+
+import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
+import br.com.ifrn.ddldevs.pets_backend.domain.PetAnalysis;
+import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis.PetAnalysisResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.mapper.PetAnalysisMapper;
+import br.com.ifrn.ddldevs.pets_backend.repository.PetAnalysisRepository;
+import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 
 @ActiveProfiles("test")
 class PetAnalysisServiceTest {
@@ -47,7 +54,7 @@ class PetAnalysisServiceTest {
 
         PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(1L, "http://example.com/picture.jpg", "Healthy", "Blood Test");
         PetAnalysis petAnalysis = new PetAnalysis();
-        PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(1L, "http://example.com/picture.jpg", "Healthy", "Blood Test");
+        PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(1L, "http://example.com/picture.jpg", "Healthy", "Blood Test", "2021-10-10");
 
         when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
         when(petAnalysisMapper.toEntity(requestDTO)).thenReturn(petAnalysis);
@@ -185,7 +192,7 @@ class PetAnalysisServiceTest {
 
         PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(
                 1L, "http://example.com/picture.jpg",
-                "Healthy", "Blood Test");
+                "Healthy", "Blood Test", "2021-10-10");
 
         when(petAnalysisRepository.findById(1L)).thenReturn(Optional.of(analyses));
         when(petAnalysisMapper.toResponse(analyses)).thenReturn(responseDTO);

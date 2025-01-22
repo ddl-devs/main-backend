@@ -30,8 +30,4 @@ public class RecommendationRequestDTO {
     @NotNull
     private String categorieRecommendation;
 
-    @Schema(description = "Date and time of the recommendation", example = "2024-12-05T14:30:00Z")
-    @NotNull
-    private LocalDateTime timestamp;
-
 }
