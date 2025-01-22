@@ -1,11 +1,21 @@
 package br.com.ifrn.ddldevs.pets_backend.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.PastOrPresent;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.util.List;
+
+import org.hibernate.validator.constraints.Length;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.PastOrPresent;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
@@ -23,11 +33,14 @@ public class User {
     private String keycloakId;
 
     @Column(nullable = false, unique = true)
+    @Length(max=255)
     private String username;
 
+    @Length(max=255)
     @Column(nullable = false)
     private String firstName;
 
+    @Length(max=255)
     @Column(nullable = false)
     private String lastName;
 
