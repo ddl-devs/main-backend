@@ -3,10 +3,12 @@ package br.com.ifrn.ddldevs.pets_backend.service;
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
+import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
@@ -31,6 +33,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 public class UserServiceTest {
+
+    @Mock
+    private KeycloakService keycloakService;
 
     @Mock
     private PetMapper petMapper;
@@ -241,6 +246,68 @@ public class UserServiceTest {
                 "ID não pode ser negativo");
     }
     // Structure Tests
+
+    @Test
+    void succesfullyCreateUser(){
+
+        User user = new User(1L, "1abc23", "john", "John", "Doe", "john" +
+                "@email" +
+                ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
+                new ArrayList<>());
+
+        UserRequestDTO userRequestDTO = new UserRequestDTO(
+                user.getUsername(),
+                user.getKeycloakId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getDateOfBirth(),
+                user.getPhotoUrl(),
+                "abc123"
+        );
+
+        UserResponseDTO userDto = new UserResponseDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getKeycloakId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getDateOfBirth(),
+                user.getPhotoUrl()
+        );
+
+        KcUserResponseDTO kcUserResponseDTO = new KcUserResponseDTO(
+                user.getKeycloakId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName()
+        );
+
+        when(userMapper.toEntity(userRequestDTO)).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.toResponseDTO(user)).thenReturn(userDto);
+        when(keycloakService.createUser(userRequestDTO)).thenReturn(kcUserResponseDTO);
+
+        UserResponseDTO response = userService.createUser(userRequestDTO);
+
+        verify(userRepository, times(1)).save(any(User.class));
+        verify(userMapper, times(1)).toEntity(userRequestDTO);
+        verify(userMapper, times(1)).toResponseDTO(user);
+
+        assertEquals(response.id(), user.getId());
+        assertEquals(response.keycloakId(), user.getKeycloakId());
+        assertEquals(response.username(), user.getUsername());
+        assertEquals(response.firstName(), user.getFirstName());
+
+        assertEquals(kcUserResponseDTO.id(), response.keycloakId());
+        assertEquals(kcUserResponseDTO.email(), user.getEmail());
+        assertEquals(kcUserResponseDTO.firstName(), user.getFirstName());
+        assertEquals(kcUserResponseDTO.lastName(), user.getLastName());
+        assertEquals(kcUserResponseDTO.username(), user.getUsername());
+    }
+
 
     @Test
     void getPetsUserNotFound() {
