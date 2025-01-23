@@ -396,5 +396,87 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    void succesfullyUpdateUser() {
+        // Arrange: Configuração do Usuário e DTOs
+        User user = new User(
+                1L,
+                "1abc23",
+                "john",
+                "John",
+                "Doe",
+                "john@email.com",
+                LocalDate.of(1990, 1, 15),
+                "www.foto.url",
+                new ArrayList<>()
+        );
+
+        UserRequestDTO userRequestDTO = new UserRequestDTO(
+                user.getUsername(),
+                user.getKeycloakId(),
+                user.getEmail(),
+                "jhon updated",
+                "doe updated",
+                user.getDateOfBirth(),
+                "www.newphoto.url",
+                "abc123"
+        );
+
+        KcUserResponseDTO kcUserResponseDTO = new KcUserResponseDTO(
+                user.getKeycloakId(),
+                userRequestDTO.username(),
+                userRequestDTO.email(),
+                userRequestDTO.firstName(),
+                userRequestDTO.lastName()
+        );
+
+        UserResponseDTO userResponseDTO = new UserResponseDTO(
+                user.getId(),
+                kcUserResponseDTO.username(),
+                kcUserResponseDTO.id(),
+                kcUserResponseDTO.email(),
+                kcUserResponseDTO.firstName(),
+                kcUserResponseDTO.lastName(),
+                userRequestDTO.dateOfBirth(),
+                userRequestDTO.photoUrl()
+        );
+
+        // Mock: Simulação dos Comportamentos
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(keycloakService.updateUser(user.getKeycloakId(), userRequestDTO)).thenReturn(kcUserResponseDTO);
+        doAnswer(invocation -> {
+            // Atualiza o usuário local com os dados retornados do Keycloak
+            user.setUsername(kcUserResponseDTO.username());
+            user.setFirstName(kcUserResponseDTO.firstName());
+            user.setLastName(kcUserResponseDTO.lastName());
+            user.setEmail(kcUserResponseDTO.email());
+            user.setDateOfBirth(userRequestDTO.dateOfBirth());
+            user.setPhotoUrl(userRequestDTO.photoUrl());
+            return null;
+        }).when(userMapper).updateEntityFromDTO(userRequestDTO, user);
+        when(userRepository.save(user)).thenReturn(user);
+        when(userMapper.toResponseDTO(user)).thenReturn(userResponseDTO);
+
+        // Act: Chamada do Método a Ser Testado
+        UserResponseDTO response = userService.updateUser(1L, userRequestDTO);
+
+        // Assert: Verificação dos Resultados
+        verify(userRepository, times(1)).findById(1L);
+        verify(keycloakService, times(1)).updateUser(user.getKeycloakId(), userRequestDTO);
+        verify(userMapper, times(1)).updateEntityFromDTO(userRequestDTO, user);
+        verify(userRepository, times(1)).save(user);
+        verify(userMapper, times(1)).toResponseDTO(user);
+
+        // Validação dos Dados Atualizados
+        assertEquals(userResponseDTO.id(), response.id());
+        assertEquals(userResponseDTO.username(), response.username());
+        assertEquals(userResponseDTO.firstName(), response.firstName());
+        assertEquals(userResponseDTO.lastName(), response.lastName());
+        assertEquals(userResponseDTO.email(), response.email());
+        assertEquals(userResponseDTO.dateOfBirth(), response.dateOfBirth());
+        assertEquals(userResponseDTO.photoUrl(), response.photoUrl());
+    }
+
+
 
 }
