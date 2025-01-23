@@ -14,6 +14,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import jakarta.ws.rs.NotFoundException;
+import org.hibernate.annotations.NotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -361,5 +363,41 @@ class PetServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> petService.deletePet(-1L),
                 "ID não pode ser negativo");
+    }
+
+    // Structure Tests
+
+    @Test
+    void updateNotFoundPet() {
+        PetRequestDTO updatedPetDto = new PetRequestDTO();
+        updatedPetDto.setName("Apolo");
+        updatedPetDto.setSpecies("Dog");
+        updatedPetDto.setHeight(30);
+        updatedPetDto.setWeight(10.0);
+
+        when(petRepository.findById(30L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                () -> petService.updatePet(30L, updatedPetDto),
+                "Pet não encontrado");
+    }
+
+    @Test
+    void deleteNotFoundPet() {
+
+        when(petRepository.existsById(30L)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> petService.deletePet(30L),
+                "Pet não encontrado");
+    }
+
+    @Test
+    void getNotFoundPet() {
+        when(petRepository.findById(30L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                () -> petService.getPet(30L),
+                "Pet não encontrado");
     }
 }
