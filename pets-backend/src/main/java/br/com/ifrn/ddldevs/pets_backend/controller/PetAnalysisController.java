@@ -12,20 +12,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pet-analyses")
+@RequestMapping("/pet-analysis")
 @RequiredArgsConstructor
 @Tag(name="Pets Analysis", description = "API for Pets Analysis management")
 public class PetAnalysisController {
 
     private final PetAnalysisService petAnalysisService;
 
-    @PostMapping()
+    @PostMapping("/")
     @Operation(summary = "Create new Pet Analysis")
     public PetAnalysisResponseDTO createPetAnalysis(@Valid @RequestBody PetAnalysisRequestDTO petAnalysisRequestDTO) {
         return petAnalysisService.createPetAnalysis(petAnalysisRequestDTO);
     }
 
-    @GetMapping()
+    @GetMapping("/")
     @Operation(summary = "List Pet Analyses")
     public List<PetAnalysisResponseDTO> listPetAnalyses() {
         return petAnalysisService.listPetAnalyses();
@@ -48,11 +48,4 @@ public class PetAnalysisController {
     public List<PetAnalysisResponseDTO> getPetAnalysisByPetId(@PathVariable Long id) {
         return petAnalysisService.getAllByPetId(id);
     }
-
-    @GetMapping("user/{id}")
-    @Operation(summary = "Get Pet Analysis by user id")
-    public List<PetAnalysisResponseDTO> getPetAnalysisByUserId(@PathVariable Long id) {
-        return petAnalysisService.getAllByUserId(id);
-    }
-
 }

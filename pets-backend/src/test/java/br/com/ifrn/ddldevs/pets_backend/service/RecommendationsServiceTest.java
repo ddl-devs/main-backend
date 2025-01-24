@@ -117,37 +117,6 @@ class RecommendationsServiceTest {
                 "ID não pode ser negativo");
     }
 
-    // c
-
-    @Test
-    void getRecommendationByUserWithValidId() {
-        List<Recommendation> recommendations = new ArrayList<>();
-        recommendations.add(new Recommendation());
-
-        when(recommendationRepository.findAllByUserId(1L)).thenReturn(recommendations);
-        when(recommendationMapper.toDTOList(recommendations)).thenReturn(new ArrayList<>());
-
-        List<RecommendationResponseDTO> response = recommendationService.getAllByUserId(1L);
-
-        assertNotNull(response);
-        verify(recommendationRepository).findAllByUserId(1L);
-
-    }
-
-    @Test
-    void getRecommendationByUserWithInvalidId() {
-        assertThrows(IllegalArgumentException.class,
-                () -> recommendationService.getAllByUserId(-1L),
-                "ID não pode ser negativo");
-    }
-
-    @Test
-    void getRecommendationByUserWithNullId() {
-        assertThrows(IllegalArgumentException.class,
-                () -> recommendationService.getAllByUserId(null),
-                "ID não pode ser nulo");
-    }
-
     // d
 
     @Test

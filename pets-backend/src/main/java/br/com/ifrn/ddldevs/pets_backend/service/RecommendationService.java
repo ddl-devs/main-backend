@@ -93,16 +93,4 @@ public class RecommendationService {
         List<Recommendation> recommendations = recommendationRepository.findAllByPetId(id);
         return recommendationMapper.toDTOList(recommendations);
     }
-
-    public List<RecommendationResponseDTO> getAllByUserId(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID não pode ser nulo");
-        }
-        if (id < 0) {
-            throw new IllegalArgumentException("ID não pode ser negativo");
-        }
-
-        List<Recommendation> recommendations = recommendationRepository.findAllByUserId(id);
-        return recommendationMapper.toDTOList(recommendations);
-    }
 }

@@ -94,15 +94,4 @@ public class PetAnalysisService {
                 .orElseThrow(() -> new EntityNotFoundException("Pet Analysis not found"));
         return petAnalysisMapper.toResponse(petAnalysis);
     }
-
-    public List<PetAnalysisResponseDTO> getAllByUserId(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID não pode ser nulo");
-        }
-        if (id < 0) {
-            throw new IllegalArgumentException("ID não pode ser negativo");
-        }
-        List<PetAnalysis> petAnalysis = petAnalysisRepository.findAllByUserId(id);
-        return petAnalysisMapper.toResponseList(petAnalysis);
-    }
 }
