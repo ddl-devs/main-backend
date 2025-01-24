@@ -112,36 +112,6 @@ class PetAnalysisServiceTest {
                 "ID não pode ser negativo");
     }
 
-    // c
-
-    @Test
-    void getAllByUserIdWithValidId() {
-        List<PetAnalysis> analyses = new ArrayList<>();
-        analyses.add(new PetAnalysis());
-
-        when(petAnalysisRepository.findAllByUserId(1L)).thenReturn(analyses);
-        when(petAnalysisMapper.toResponseList(analyses)).thenReturn(new ArrayList<>());
-
-        List<PetAnalysisResponseDTO> response = petAnalysisService.getAllByUserId(1L);
-
-        assertNotNull(response);
-        verify(petAnalysisRepository).findAllByUserId(1L);
-    }
-
-    @Test
-    void getAllByUserIdWithInvalidId() {
-        assertThrows(IllegalArgumentException.class,
-                () -> petAnalysisService.getAllByUserId(-1L),
-                "ID não pode ser negativo");
-    }
-
-    @Test
-    void getAllByUserIdWithNullId() {
-        assertThrows(IllegalArgumentException.class,
-                () -> petAnalysisService.getAllByUserId(null),
-                "ID não pode ser nulo");
-    }
-
     // d
 
     @Test

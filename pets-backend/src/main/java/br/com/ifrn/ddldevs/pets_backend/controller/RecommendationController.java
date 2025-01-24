@@ -19,13 +19,13 @@ public class RecommendationController {
     @Autowired
     private RecommendationService recommendationService;
 
-    @PostMapping
+    @PostMapping("/")
     @Operation(summary = "Create new recommendation")
     public RecommendationResponseDTO createRecommendation(@Valid @RequestBody RecommendationRequestDTO recommendationRequestDTO) {
         return recommendationService.createRecommendation(recommendationRequestDTO);
     }
 
-    @GetMapping
+    @GetMapping("/")
     @Operation(summary = "List recommendations")
     public List<RecommendationResponseDTO> listRecommendations() {
         return recommendationService.listRecommendations();
@@ -48,11 +48,4 @@ public class RecommendationController {
     public List<RecommendationResponseDTO> getRecommendationsByPetId(@PathVariable Long id) {
         return recommendationService.getAllByPetId(id);
     }
-
-    @GetMapping("user/{id}")
-    @Operation(summary = "Get recommendations by user id")
-    public List<RecommendationResponseDTO> getRecommendationsByUserId(@PathVariable Long id) {
-        return recommendationService.getAllByUserId(id);
-    }
-
 }
