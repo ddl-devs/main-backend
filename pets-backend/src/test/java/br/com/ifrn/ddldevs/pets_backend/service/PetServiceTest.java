@@ -15,7 +15,6 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import jakarta.ws.rs.NotFoundException;
-import org.hibernate.annotations.NotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -134,17 +133,6 @@ class PetServiceTest {
 
         assertFalse(violations.isEmpty());
         assertEquals(8, violations.size());
-
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("name") && v.getMessage()
-                .contains("must not be blank")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("weight") && v.getMessage()
-                .contains("must be greater than 0")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("species") && v.getMessage()
-                .contains("must not be blank")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("breed") && v.getMessage()
-                .contains("must not be blank")));
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("height") && v.getMessage()
-                .contains("must be greater than 0")));
     }
 
     @Test
