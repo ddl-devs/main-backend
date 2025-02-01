@@ -1,13 +1,12 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
-import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
@@ -64,7 +63,7 @@ public class UserServiceTest {
     @Test
     void shouldPassValidationForValidUserRequestDTO() {
         UserRequestDTO userRequestDTO = new UserRequestDTO(
-                "john", "1abc23", "john@email.com",
+                "john", "john@email.com",
                 "John", "Doe",
                 LocalDate.of(1990, 1, 15),
                 "aws.12bs.bucket.com", "user!123"
@@ -79,7 +78,7 @@ public class UserServiceTest {
     @Test
     void shouldFailValidationWhenFieldsAreNull() {
         UserRequestDTO userRequestDTO = new UserRequestDTO(
-                null, "Doe",
+                "john",
                 null, null, null,
                 LocalDate.of(1990, 1, 15),
                 "aws.12bs.bucket.com", null
@@ -89,13 +88,13 @@ public class UserServiceTest {
                 validator.validate(userRequestDTO);
 
         assertFalse(violations.isEmpty(), "Expected validation errors");
-        assertEquals(5, violations.size());
+        assertEquals(4, violations.size());
     }
 
     @Test
     void shouldFailValidationEmailInvalid() {
         UserRequestDTO userRequestDTO = new UserRequestDTO(
-                "john", "1abc23", "john123email.com",
+                "john","john123email.com",
                 "John", "Doe",
                 LocalDate.of(1990, 1, 15),
                 "aws.12bs.bucket.com", "user!123"
@@ -138,7 +137,7 @@ public class UserServiceTest {
     @Test
     void shouldFailValidationWhenMinAgeIsFalse() {
         UserRequestDTO userRequestDTO = new UserRequestDTO(
-                "john", "1abc23", "john@email.com",
+                "john",  "john@email.com",
                 "John", "Doe",
                 LocalDate.of(2015, 1, 15),
                 "aws.12bs.bucket.com", "user!123"
@@ -156,11 +155,11 @@ public class UserServiceTest {
 
     @Test
     void updateUserNullId() {
-        UserRequestDTO userRequestDTO = new UserRequestDTO(
-                "john", "1abc23", "john@email.com",
+        UserUpdateRequestDTO userRequestDTO = new UserUpdateRequestDTO(
+                "john@email.com",
                 "John", "Doe",
                 LocalDate.of(1990, 1, 15),
-                "aws.12bs.bucket.com", "user!123"
+                "aws.12bs.bucket.com"
         );
 
         assertThrows(IllegalArgumentException.class,
@@ -170,11 +169,11 @@ public class UserServiceTest {
 
     @Test
     void updateUserInvalidId() {
-        UserRequestDTO userRequestDTO = new UserRequestDTO(
-                "john", "1abc23", "john@email.com",
+        UserUpdateRequestDTO userRequestDTO = new UserUpdateRequestDTO(
+                "john@email.com",
                 "John", "Doe",
                 LocalDate.of(1990, 1, 15),
-                "aws.12bs.bucket.com", "user!123"
+                "aws.12bs.bucket.com"
         );
 
         assertThrows(IllegalArgumentException.class,
@@ -224,11 +223,16 @@ public class UserServiceTest {
 
     @Test
     void deleteUserTrue() {
-        when(userRepository.existsById(1L)).thenReturn(true);
+        User existingUser = new User(1L, "1abc23", "john",
+                "John", "Doe", "john@email.com",
+                LocalDate.of(1990, 1, 15),
+                "www.foto.url", new ArrayList<>());
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
 
         userService.deleteUser(1L);
 
-        verify(userRepository, times(1)).existsById(1L);
+        verify(userRepository, times(1)).findById(1L);
         verify(userRepository, times(1)).deleteById(1L);
     }
 
@@ -257,7 +261,6 @@ public class UserServiceTest {
 
         UserRequestDTO userRequestDTO = new UserRequestDTO(
                 user.getUsername(),
-                user.getKeycloakId(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
@@ -411,20 +414,17 @@ public class UserServiceTest {
                 new ArrayList<>()
         );
 
-        UserRequestDTO userRequestDTO = new UserRequestDTO(
-                user.getUsername(),
-                user.getKeycloakId(),
+        UserUpdateRequestDTO userRequestDTO = new UserUpdateRequestDTO(
                 user.getEmail(),
                 "jhon updated",
                 "doe updated",
                 user.getDateOfBirth(),
-                "www.newphoto.url",
-                "abc123"
+                "www.newphoto.url"
         );
 
         KcUserResponseDTO kcUserResponseDTO = new KcUserResponseDTO(
                 user.getKeycloakId(),
-                userRequestDTO.username(),
+                user.getUsername(),
                 userRequestDTO.email(),
                 userRequestDTO.firstName(),
                 userRequestDTO.lastName()

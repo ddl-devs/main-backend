@@ -1,4 +1,4 @@
-package br.com.ifrn.ddldevs.pets_backend.dto.pet;
+package br.com.ifrn.ddldevs.pets_backend.dto.Pet;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor

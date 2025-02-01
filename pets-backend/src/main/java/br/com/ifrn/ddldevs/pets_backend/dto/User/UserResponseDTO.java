@@ -1,4 +1,4 @@
-package br.com.ifrn.ddldevs.pets_backend.dto.user;
+package br.com.ifrn.ddldevs.pets_backend.dto.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

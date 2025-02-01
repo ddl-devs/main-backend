@@ -1,8 +1,8 @@
 package br.com.ifrn.ddldevs.pets_backend.mapper;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import org.mapstruct.*;
 
 import java.util.List;

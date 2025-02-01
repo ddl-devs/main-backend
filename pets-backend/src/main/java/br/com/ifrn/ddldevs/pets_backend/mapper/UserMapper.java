@@ -1,8 +1,9 @@
 package br.com.ifrn.ddldevs.pets_backend.mapper;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface UserMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDTO(UserRequestDTO dto, @MappingTarget User user);
+    void updateEntityFromDTO(UserUpdateRequestDTO dto, @MappingTarget User user);
 }
