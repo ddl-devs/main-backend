@@ -1,5 +1,6 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
+import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Species;
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetRequestDTO;
@@ -26,7 +27,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
@@ -75,9 +77,9 @@ class PetServiceTest {
         PetRequestDTO dto = new PetRequestDTO();
         dto.setUserId(user.getId());
         dto.setName("Apolo");
-        dto.setSpecies("Dog");
+        dto.setSpecies(Species.DOG);
         dto.setHeight(30);
-        dto.setWeight(10.0);
+        dto.setWeight(BigDecimal.valueOf(10.0));
 
         Pet pet = new Pet();
         pet.setId(1L);
@@ -89,6 +91,7 @@ class PetServiceTest {
 
         PetResponseDTO petResponse = new PetResponseDTO(
                 pet.getId(),
+                pet.getCreatedAt(),
                 pet.getName(),
                 pet.getGender(),
                 pet.getAge(),
@@ -96,7 +99,6 @@ class PetServiceTest {
                 pet.getBreed(),
                 pet.getSpecies(),
                 pet.getHeight(),
-                pet.getDateOfBirth(),
                 pet.getPhotoUrl()
         );
 
@@ -108,9 +110,9 @@ class PetServiceTest {
 
         assertNotNull(response);
         assertEquals("Apolo", response.name());
-        assertEquals("Dog", response.species());
+        assertEquals(Species.DOG, response.species());
         assertEquals(30, response.height());
-        assertEquals(10.0, response.weight(), 0.01);
+        assertEquals(BigDecimal.valueOf(10.0), response.weight());
 
         verify(userRepository).findById(1L);
         verify(petMapper).toEntity(dto);
@@ -122,17 +124,16 @@ class PetServiceTest {
     void createPetInvalidInformation() {
         PetRequestDTO dto = new PetRequestDTO();
         dto.setName("");
-        dto.setWeight(-5.0);
-        dto.setSpecies("");
+        dto.setWeight(BigDecimal.valueOf(-5.0));
+        dto.setSpecies(Species.DOG);
         dto.setBreed("");
         dto.setHeight(0);
-        dto.setDateOfBirth(LocalDate.of(2026, 1, 1));
         dto.setUserId(null);
 
         Set<ConstraintViolation<PetRequestDTO>> violations = validator.validate(dto);
 
         assertFalse(violations.isEmpty());
-        assertEquals(8, violations.size());
+        assertEquals(6, violations.size());
     }
 
     @Test
@@ -146,7 +147,6 @@ class PetServiceTest {
                 "species": "Dog",
                 "breed": "Golden Retriever",
                 "height": 50,
-                "dateOfBirth": "2020-01-01",
                 "userId": 1
             }
         """;
@@ -162,11 +162,10 @@ class PetServiceTest {
     void createPetNonExistentUser() {
         PetRequestDTO dto = new PetRequestDTO();
         dto.setName("Buddy");
-        dto.setWeight(10.0);
-        dto.setSpecies("Dog");
+        dto.setWeight(BigDecimal.valueOf(10.0));
+        dto.setSpecies(Species.DOG);
         dto.setBreed("Golden Retriever");
         dto.setHeight(50);
-        dto.setDateOfBirth(LocalDate.of(2020, 1, 1));
         dto.setUserId(999L);
 
         when(userRepository.findById(dto.getUserId())).thenReturn(Optional.empty());
@@ -190,33 +189,33 @@ class PetServiceTest {
         Pet existingPet = new Pet();
         existingPet.setId(petId);
         existingPet.setName("Buddy");
-        existingPet.setSpecies("Cat");
+        existingPet.setSpecies(Species.CAT);
         existingPet.setHeight(20);
-        existingPet.setWeight(5.0);
+        existingPet.setWeight(BigDecimal.valueOf(5.0));
 
         PetRequestDTO updatedDTO = new PetRequestDTO();
         updatedDTO.setName("Apolo");
-        updatedDTO.setSpecies("Dog");
+        updatedDTO.setSpecies(Species.DOG);
         updatedDTO.setHeight(30);
-        updatedDTO.setWeight(10.0);
+        updatedDTO.setWeight(BigDecimal.valueOf(10.0));
 
         Pet updatedPet = new Pet();
         updatedPet.setId(petId);
         updatedPet.setName("Apolo");
-        updatedPet.setSpecies("Dog");
+        updatedPet.setSpecies(Species.DOG);
         updatedPet.setHeight(30);
-        updatedPet.setWeight(10.0);
+        updatedPet.setWeight(BigDecimal.valueOf(10.0));
 
         PetResponseDTO expectedResponse = new PetResponseDTO(
                 petId,
+                LocalDateTime.now(),
                 "Apolo",
                 null,
                 null,
-                10.0,
+                BigDecimal.valueOf(10.0),
                 null,
-                "Dog",
+                Species.DOG,
                 30,
-                null,
                 null
         );
 
@@ -252,9 +251,9 @@ class PetServiceTest {
     void updatePetNullId() {
         PetRequestDTO updatedPetDto = new PetRequestDTO();
         updatedPetDto.setName("Apolo");
-        updatedPetDto.setSpecies("Dog");
+        updatedPetDto.setSpecies(Species.DOG);
         updatedPetDto.setHeight(30);
-        updatedPetDto.setWeight(10.0);
+        updatedPetDto.setWeight(BigDecimal.valueOf(10.0));
 
         assertThrows(IllegalArgumentException.class,
                 () -> petService.updatePet(null,updatedPetDto),
@@ -265,9 +264,9 @@ class PetServiceTest {
     void updatePetInvalidId() {
         PetRequestDTO updatedPetDto = new PetRequestDTO();
         updatedPetDto.setName("Apolo");
-        updatedPetDto.setSpecies("Dog");
+        updatedPetDto.setSpecies(Species.DOG);
         updatedPetDto.setHeight(30);
-        updatedPetDto.setWeight(10.0);
+        updatedPetDto.setWeight(BigDecimal.valueOf(10.0));
 
         assertThrows(IllegalArgumentException.class,
                 () -> petService.updatePet(-1L,updatedPetDto),
@@ -282,12 +281,13 @@ class PetServiceTest {
         Pet pet = new Pet();
         pet.setId(validId);
         pet.setName("Apolo");
-        pet.setSpecies("Dog");
+        pet.setSpecies(Species.DOG);
         pet.setHeight(30);
-        pet.setWeight(10.0);
+        pet.setWeight(BigDecimal.valueOf(10.0));
 
         PetResponseDTO petResponseDTO = new PetResponseDTO(
                 pet.getId(),
+                pet.getCreatedAt(),
                 pet.getName(),
                 pet.getGender(),
                 pet.getAge(),
@@ -295,7 +295,6 @@ class PetServiceTest {
                 pet.getBreed(),
                 pet.getSpecies(),
                 pet.getHeight(),
-                pet.getDateOfBirth(),
                 pet.getPhotoUrl()
         );
 
@@ -307,9 +306,9 @@ class PetServiceTest {
         assertNotNull(response);
         assertEquals(validId, response.id());
         assertEquals("Apolo", response.name());
-        assertEquals("Dog", response.species());
+        assertEquals(Species.DOG, response.species());
         assertEquals(30, response.height());
-        assertEquals(10.0, response.weight());
+        assertEquals(BigDecimal.valueOf(10.0), response.weight());
     }
 
     @Test
@@ -359,9 +358,9 @@ class PetServiceTest {
     void updateNotFoundPet() {
         PetRequestDTO updatedPetDto = new PetRequestDTO();
         updatedPetDto.setName("Apolo");
-        updatedPetDto.setSpecies("Dog");
+        updatedPetDto.setSpecies(Species.DOG);
         updatedPetDto.setHeight(30);
-        updatedPetDto.setWeight(10.0);
+        updatedPetDto.setWeight(BigDecimal.valueOf(10.0));
 
         when(petRepository.findById(30L)).thenReturn(Optional.empty());
 

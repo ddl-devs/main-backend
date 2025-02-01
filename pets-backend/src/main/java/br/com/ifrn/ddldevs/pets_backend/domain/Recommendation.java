@@ -6,29 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Recommendation {
+@Table(name = "recommendations")
+public class Recommendation extends BaseEntity {
+    @Lob
+    @Column(nullable = false)
+    private String recommendation;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, length = 64, name = "category_recommendation")
+    private String categoryRecommendation;
 
     @ManyToOne
     @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
-
-    @Column(nullable = false)
-    private String recommendation;
-
-    @Column(nullable = false)
-    private String categorieRecommendation;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime data = LocalDateTime.now();
 }

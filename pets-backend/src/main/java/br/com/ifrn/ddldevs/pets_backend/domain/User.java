@@ -1,23 +1,19 @@
 package br.com.ifrn.ddldevs.pets_backend.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 
-@Data
 @Entity
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class User extends BaseEntity{
     @Column(nullable = false, unique = true)
     private String keycloakId;
 
@@ -33,9 +29,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @PastOrPresent
     private LocalDate dateOfBirth;
 
+    @Column(length = 256)
     private String photoUrl;
 
     @OneToMany(mappedBy = "user")

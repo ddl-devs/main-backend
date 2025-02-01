@@ -82,6 +82,7 @@ public class RecommendationService {
         recommendationRepository.deleteById(id);
     }
 
+    @Transactional
     public List<RecommendationResponseDTO> getAllByPetId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo");
