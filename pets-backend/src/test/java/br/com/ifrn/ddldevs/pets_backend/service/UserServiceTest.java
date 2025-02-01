@@ -7,7 +7,7 @@ import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
+import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakServiceImpl;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceTest {
 
     @Mock
-    private KeycloakService keycloakService;
+    private KeycloakServiceImpl keycloakServiceImpl;
 
     @Mock
     private PetMapper petMapper;
@@ -291,7 +291,7 @@ public class UserServiceTest {
         when(userMapper.toEntity(userRequestDTO)).thenReturn(user);
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(userDto);
-        when(keycloakService.createUser(userRequestDTO)).thenReturn(kcUserResponseDTO);
+        when(keycloakServiceImpl.createUser(userRequestDTO)).thenReturn(kcUserResponseDTO);
 
         UserResponseDTO response = userService.createUser(userRequestDTO);
 
@@ -443,7 +443,7 @@ public class UserServiceTest {
 
         // Mock: Simulação dos Comportamentos
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(keycloakService.updateUser(user.getKeycloakId(), userRequestDTO)).thenReturn(kcUserResponseDTO);
+        when(keycloakServiceImpl.updateUser(user.getKeycloakId(), userRequestDTO)).thenReturn(kcUserResponseDTO);
         doAnswer(invocation -> {
             // Atualiza o usuário local com os dados retornados do Keycloak
             user.setUsername(kcUserResponseDTO.username());
@@ -462,7 +462,7 @@ public class UserServiceTest {
 
         // Assert: Verificação dos Resultados
         verify(userRepository, times(1)).findById(1L);
-        verify(keycloakService, times(1)).updateUser(user.getKeycloakId(), userRequestDTO);
+        verify(keycloakServiceImpl, times(1)).updateUser(user.getKeycloakId(), userRequestDTO);
         verify(userMapper, times(1)).updateEntityFromDTO(userRequestDTO, user);
         verify(userRepository, times(1)).save(user);
         verify(userMapper, times(1)).toResponseDTO(user);

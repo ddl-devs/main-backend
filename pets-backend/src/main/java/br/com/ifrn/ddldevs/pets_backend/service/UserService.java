@@ -7,7 +7,7 @@ import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
-import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
+import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakServiceImpl;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
@@ -22,7 +22,7 @@ import java.util.List;
 public class UserService {
 
     @Autowired
-    private KeycloakService keycloakService;
+    private KeycloakServiceImpl keycloakServiceImpl;
 
     @Autowired
     private UserRepository userRepository;
@@ -35,7 +35,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO dto) {
-        KcUserResponseDTO keycloakUser = keycloakService.createUser(dto);
+        KcUserResponseDTO keycloakUser = keycloakServiceImpl.createUser(dto);
 
         User user = userMapper.toEntity(dto);
         user.setKeycloakId(keycloakUser.id());
@@ -76,7 +76,7 @@ public class UserService {
         User user = userRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
 
-        keycloakService.updateUser(user.getKeycloakId(), dto);
+        keycloakServiceImpl.updateUser(user.getKeycloakId(), dto);
 
         userMapper.updateEntityFromDTO(dto, user);
 
@@ -97,7 +97,7 @@ public class UserService {
                 () -> new ResourceNotFoundException("Usuário não encontrado!")
         );
 
-        keycloakService.deleteUser(user.getKeycloakId());
+        keycloakServiceImpl.deleteUser(user.getKeycloakId());
 
         userRepository.deleteById(id);
     }

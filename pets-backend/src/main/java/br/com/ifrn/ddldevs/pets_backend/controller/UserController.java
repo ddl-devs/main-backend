@@ -4,7 +4,6 @@ import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
