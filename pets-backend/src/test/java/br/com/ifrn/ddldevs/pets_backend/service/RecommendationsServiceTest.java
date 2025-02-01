@@ -49,7 +49,7 @@ class RecommendationsServiceTest {
 
         RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(1L, "Feed your pet twice daily", "Nutrition");
         Recommendation recommendation = new Recommendation();
-        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, LocalDateTime.now(), "Feed your pet twice daily", "Nutrition");
+        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, LocalDateTime.now(), LocalDateTime.now(), "Feed your pet twice daily", "Nutrition");
 
         when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
         when(recommendationMapper.toEntity(requestDTO)).thenReturn(recommendation);
@@ -157,7 +157,7 @@ class RecommendationsServiceTest {
         recommendation.setCategoryRecommendation("Nutrition");
         recommendation.setCreatedAt(LocalDateTime.now());
 
-        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, LocalDateTime.now(), "Feed your pet twice daily", "Nutrition");
+        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, LocalDateTime.now(), LocalDateTime.now(), "Feed your pet twice daily", "Nutrition");
 
         when(recommendationRepository.findById(1L)).thenReturn(Optional.of(recommendation));
         when(recommendationMapper.toRecommendationResponseDTO(recommendation)).thenReturn(responseDTO);

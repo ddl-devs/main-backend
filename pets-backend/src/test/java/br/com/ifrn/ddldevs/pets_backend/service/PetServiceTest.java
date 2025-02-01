@@ -92,6 +92,7 @@ class PetServiceTest {
         PetResponseDTO petResponse = new PetResponseDTO(
                 pet.getId(),
                 pet.getCreatedAt(),
+                pet.getUpdatedAt(),
                 pet.getName(),
                 pet.getGender(),
                 pet.getAge(),
@@ -209,6 +210,7 @@ class PetServiceTest {
         PetResponseDTO expectedResponse = new PetResponseDTO(
                 petId,
                 LocalDateTime.now(),
+                LocalDateTime.now(),
                 "Apolo",
                 null,
                 null,
@@ -288,6 +290,7 @@ class PetServiceTest {
         PetResponseDTO petResponseDTO = new PetResponseDTO(
                 pet.getId(),
                 pet.getCreatedAt(),
+                pet.getUpdatedAt(),
                 pet.getName(),
                 pet.getGender(),
                 pet.getAge(),

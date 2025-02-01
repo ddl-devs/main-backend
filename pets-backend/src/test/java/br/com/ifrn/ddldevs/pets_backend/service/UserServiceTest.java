@@ -193,7 +193,7 @@ public class UserServiceTest {
                 new ArrayList<>());
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(), user.getCreatedAt(),
+        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(), user.getCreatedAt(), user.getUpdatedAt(),
                 user.getUsername(),
                 user.getKeycloakId(),
                 user.getEmail(),
@@ -274,6 +274,7 @@ public class UserServiceTest {
         UserResponseDTO userDto = new UserResponseDTO(
                 user.getId(),
                 user.getCreatedAt(),
+                user.getUpdatedAt(),
                 user.getUsername(),
                 user.getKeycloakId(),
                 user.getEmail(),
@@ -354,6 +355,7 @@ public class UserServiceTest {
         PetResponseDTO petResponse1 = new PetResponseDTO(
                 pet.getId(),
                 pet.getCreatedAt(),
+                pet.getUpdatedAt(),
                 pet.getName(),
                 pet.getGender(),
                 pet.getAge(),
@@ -367,6 +369,7 @@ public class UserServiceTest {
         PetResponseDTO petResponse2 = new PetResponseDTO(
                 pet2.getId(),
                 pet2.getCreatedAt(),
+                pet2.getUpdatedAt(),
                 pet2.getName(),
                 pet2.getGender(),
                 pet2.getAge(),
@@ -435,6 +438,7 @@ public class UserServiceTest {
         UserResponseDTO userResponseDTO = new UserResponseDTO(
                 user.getId(),
                 user.getCreatedAt(),
+                user.getUpdatedAt(),
                 kcUserResponseDTO.username(),
                 kcUserResponseDTO.id(),
                 kcUserResponseDTO.email(),

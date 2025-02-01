@@ -48,7 +48,7 @@ class PetAnalysisServiceTest {
 
         PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(1L, "http://example.com/picture.jpg", "Healthy", "Blood Test");
         PetAnalysis petAnalysis = new PetAnalysis();
-        PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(1L, LocalDateTime.now(), "http://example.com/picture.jpg", "Healthy", "Blood Test");
+        PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(1L, LocalDateTime.now(),  LocalDateTime.now(),"http://example.com/picture.jpg", "Healthy", "Blood Test");
 
         when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
         when(petAnalysisMapper.toEntity(requestDTO)).thenReturn(petAnalysis);
@@ -155,7 +155,7 @@ class PetAnalysisServiceTest {
         analyses.setPicture("http://example.com/picture.jpg");
 
         PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(
-                1L, LocalDateTime.now(), "http://example.com/picture.jpg",
+                1L, LocalDateTime.now(), LocalDateTime.now(), "http://example.com/picture.jpg",
                 "Healthy", "Blood Test");
 
         when(petAnalysisRepository.findById(1L)).thenReturn(Optional.of(analyses));
