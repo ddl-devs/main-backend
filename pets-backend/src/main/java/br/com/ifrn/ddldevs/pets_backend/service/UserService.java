@@ -1,10 +1,11 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
@@ -64,7 +65,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
+    public UserResponseDTO updateUser(Long id, UserUpdateRequestDTO dto) {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo");
         }
@@ -91,9 +92,13 @@ public class UserService {
         if (id < 0) {
             throw new IllegalArgumentException("ID não pode ser negativo");
         }
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Usuário não encontrado");
-        }
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Usuário não encontrado!")
+        );
+
+        keycloakService.deleteUser(user.getKeycloakId());
+
         userRepository.deleteById(id);
     }
 

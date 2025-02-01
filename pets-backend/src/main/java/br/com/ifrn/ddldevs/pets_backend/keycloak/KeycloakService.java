@@ -1,16 +1,22 @@
 package br.com.ifrn.ddldevs.pets_backend.keycloak;
 
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LoginRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.LogoutRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.KeycloakException;
 
+import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.GroupsResource;
+import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class KeycloakService {
@@ -89,13 +96,19 @@ public class KeycloakService {
         }
     }
 
+    public UsersResource getUsersResource() {
+        RealmResource realm = keycloak.realm(realmName);
+        return realm.users();
+    }
+
     public KcUserResponseDTO createUser(UserRequestDTO dto) {
         UserRepresentation user = new UserRepresentation();
+        user.setEnabled(true);
         user.setUsername(dto.username());
         user.setEmail(dto.email());
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
-        user.setEnabled(true);
+        user.setEmailVerified(true);
 
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
@@ -104,8 +117,20 @@ public class KeycloakService {
 
         user.setCredentials(Collections.singletonList(credential));
 
+        //
+        GroupsResource groupsResource = keycloak.realm(realmName).groups();
+        List<GroupRepresentation> groups = groupsResource.groups();
+        System.out.println("groups" + groups);
+        //
+
+        user.setGroups(Collections.singletonList("client"));
+
+        UsersResource usersResource = getUsersResource();
+
         try{
-            Response response = keycloak.realm(realmName).users().create(user);
+            Response response = usersResource.create(user);
+            System.out.println("Response Status: " + response.getStatus());
+            System.out.println("Response Body: " + response.readEntity(String.class));
 
             URI location = response.getLocation();
             String userId = location.getPath().replaceAll(".*/([^/]+)$", "$1");
@@ -127,20 +152,17 @@ public class KeycloakService {
         }
     }
 
-    public KcUserResponseDTO updateUser(String keycloakId, UserRequestDTO dto) {
-        UserResource userResource = keycloak.realm(realmName)
-                .users()
-                .get(keycloakId);
+    public KcUserResponseDTO updateUser(String keycloakId, UserUpdateRequestDTO dto) {
+        UserResource userResource = getUsersResource().get(keycloakId);
 
+        UserRepresentation userRepresentation = userResource.toRepresentation();
 
-        UserRepresentation user = userResource.toRepresentation();
-
-        user.setEmail(dto.email());
-        user.setFirstName(dto.firstName());
-        user.setLastName(dto.lastName());
+        userRepresentation.setEmail(dto.email());
+        userRepresentation.setFirstName(dto.firstName());
+        userRepresentation.setLastName(dto.lastName());
 
         try {
-            userResource.update(user);
+            userResource.update(userRepresentation);
 
             UserRepresentation updatedUser = userResource.toRepresentation();
 
@@ -154,6 +176,14 @@ public class KeycloakService {
         } catch (Exception e) {
             throw new RuntimeException("Unexpected error while updating user: " + e.getMessage(), e);
         }
+    }
 
+    public void deleteUser(String keycloakId) {
+        try {
+            UserResource userResource = getUsersResource().get(keycloakId);
+            userResource.remove();
+        } catch (Exception e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        }
     }
 }

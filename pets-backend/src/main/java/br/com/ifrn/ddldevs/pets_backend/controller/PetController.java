@@ -1,7 +1,7 @@
 package br.com.ifrn.ddldevs.pets_backend.controller;
 
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.service.PetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

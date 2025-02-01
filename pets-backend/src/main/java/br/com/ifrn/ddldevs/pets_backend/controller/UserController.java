@@ -1,8 +1,9 @@
 package br.com.ifrn.ddldevs.pets_backend.controller;
 
-import br.com.ifrn.ddldevs.pets_backend.dto.pet.PetResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.user.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
 import br.com.ifrn.ddldevs.pets_backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,9 +19,6 @@ import java.util.List;
 @RequestMapping("/users")
 @Tag(name="Users", description = "API for Users management")
 public class UserController {
-
-    @Autowired
-    private KeycloakService keycloakService;
 
     @Autowired
     private UserService userService;
@@ -41,12 +39,11 @@ public class UserController {
     @PostMapping("/")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO body) {
         return ResponseEntity.ok(userService.createUser(body));
-//        return ResponseEntity.ok(keycloakService.createUser(body));
     }
 
     @Operation(summary = "Update a user")
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO body) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequestDTO body) {
         return ResponseEntity.ok(userService.updateUser(id, body));
     }
 
