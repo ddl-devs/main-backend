@@ -47,9 +47,9 @@ class RecommendationsServiceTest {
         Pet pet = new Pet();
         pet.setId(1L);
 
-        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(1L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(1L, "Feed your pet twice daily", "Nutrition");
         Recommendation recommendation = new Recommendation();
-        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, LocalDateTime.now(), LocalDateTime.now(), "Feed your pet twice daily", "Nutrition");
 
         when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
         when(recommendationMapper.toEntity(requestDTO)).thenReturn(recommendation);
@@ -60,7 +60,7 @@ class RecommendationsServiceTest {
 
         assertNotNull(result);
         assertEquals("Feed your pet twice daily", result.recommendation());
-        assertEquals("Nutrition", result.categorieRecommendation());
+        assertEquals("Nutrition", result.categoryRecommendation());
 
         verify(petRepository).findById(1L);
         verify(recommendationRepository).save(recommendation);
@@ -68,7 +68,7 @@ class RecommendationsServiceTest {
 
     @Test
     void createRecommendationWithInvalidIdPet() {
-        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(-1L, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(-1L, "Feed your pet twice daily", "Nutrition");
 
         when(petRepository.findById(-1L)).thenReturn(Optional.empty());
 
@@ -81,7 +81,7 @@ class RecommendationsServiceTest {
 
     @Test
     void createRecommendationWithNullIDPet() {
-        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(null, "Feed your pet twice daily", "Nutrition", LocalDateTime.now());
+        RecommendationRequestDTO requestDTO = new RecommendationRequestDTO(null, "Feed your pet twice daily", "Nutrition");
 
         when(petRepository.findById(null)).thenReturn(Optional.empty());
 
@@ -154,10 +154,10 @@ class RecommendationsServiceTest {
         Recommendation recommendation = new Recommendation();
         recommendation.setId(1L);
         recommendation.setRecommendation("Feed your pet twice daily");
-        recommendation.setCategorieRecommendation("Nutrition");
-        recommendation.setData(LocalDateTime.now());
+        recommendation.setCategoryRecommendation("Nutrition");
+        recommendation.setCreatedAt(LocalDateTime.now());
 
-        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, "Feed your pet twice daily", "Nutrition", recommendation.getData());
+        RecommendationResponseDTO responseDTO = new RecommendationResponseDTO(1L, LocalDateTime.now(), LocalDateTime.now(), "Feed your pet twice daily", "Nutrition");
 
         when(recommendationRepository.findById(1L)).thenReturn(Optional.of(recommendation));
         when(recommendationMapper.toRecommendationResponseDTO(recommendation)).thenReturn(responseDTO);

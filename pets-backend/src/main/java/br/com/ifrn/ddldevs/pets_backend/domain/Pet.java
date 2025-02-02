@@ -2,15 +2,15 @@ package br.com.ifrn.ddldevs.pets_backend.domain;
 
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
+import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Species;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -20,13 +20,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pet {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+@Table(name = "pets")
+public class Pet extends BaseEntity {
+    @Column(nullable = false, length = 128)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -34,20 +30,18 @@ public class Pet {
 
     private Integer age;
 
+    @Column(length = 128)
     private String breed;
 
     @Column(nullable = false)
-    private String species;
+    @Enumerated(EnumType.STRING)
+    private Species species;
 
-    @Positive(message = "Peso deve ser maior que zero")
-    private Double weight;
+    private BigDecimal weight;
 
-    @Positive(message = "Altura (Cm) deve ser maior que zero")
     private Integer height;
 
-    @PastOrPresent
-    private LocalDate dateOfBirth;
-
+    @Column(length = 256)
     private String photoUrl;
 
     @ManyToOne

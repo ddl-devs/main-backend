@@ -18,12 +18,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+// to activate the tokens
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/auth/**").permitAll()
+//                        .anyRequest().authenticated()
+//                )
 //                .oauth2ResourceServer(
 //                        oauth2 -> oauth2.jwt(
 //                                jwt -> jwt.jwtAuthenticationConverter(new JWTConverter())
 //                        )
-//                )
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+//                );
 
         return http.build();
     }

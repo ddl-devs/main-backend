@@ -9,12 +9,8 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PetAnalysis {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+@Table(name = "pet_analisys")
+public class PetAnalysis extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
@@ -22,9 +18,9 @@ public class PetAnalysis {
     @Column(nullable = false)
     private String picture;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 64)
     private String result;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 64, name = "analysis_type")
     private String analysisType;
 }

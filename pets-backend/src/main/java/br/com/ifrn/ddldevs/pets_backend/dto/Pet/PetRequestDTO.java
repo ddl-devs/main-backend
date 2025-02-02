@@ -1,15 +1,15 @@
 package br.com.ifrn.ddldevs.pets_backend.dto.Pet;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Gender;
+import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Species;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -32,14 +32,13 @@ public class PetRequestDTO {
 
     @Schema(description = "Pet's weight (kg)", example = "2.5")
     @Valid
-    @Positive
-    private Double weight;
+    @Positive(message = "Peso (kg) deve ser maior que zero")
+    private BigDecimal weight;
 
     @Schema(description = "Pet's species")
     @Valid
     @NotNull(message = "Pet's species is required!")
-    @NotBlank
-    private String species;
+    private Species species;
 
     @Schema(description = "Pet's breed", example = "Yorkshire")
     @Valid
@@ -48,13 +47,8 @@ public class PetRequestDTO {
 
     @Schema(description = "Pet's height (cm)", example = "30")
     @Valid
-    @Positive
+    @Positive(message = "Altura (cm) deve ser maior que zero")
     private Integer height;
-
-    @Schema(description = "Pet's birthdate", example = "2024-12-05T14:30:00Z")
-    @Valid
-    @PastOrPresent
-    private LocalDate dateOfBirth;
 
     @Schema(description = "Pet's photo", example = "www.foto.com")
     @Valid

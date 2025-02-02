@@ -1,5 +1,6 @@
 package br.com.ifrn.ddldevs.pets_backend.service;
 
+import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Species;
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
@@ -7,7 +8,7 @@ import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
-import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakService;
+import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakServiceImpl;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
@@ -21,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceTest {
 
     @Mock
-    private KeycloakService keycloakService;
+    private KeycloakServiceImpl keycloakServiceImpl;
 
     @Mock
     private PetMapper petMapper;
@@ -109,12 +111,12 @@ public class UserServiceTest {
 
     @Test
     void shouldFailWhenUsernameAndEmailExists() {
-        User existingUser = new User(1L, "1abc23", "john",
+        User existingUser = new User("1ab23", "john",
                 "John", "Doe", "john@email.com",
                 LocalDate.of(1990, 1, 15),
                 "www.foto.url", new ArrayList<>());
 
-        User duplicateUser = new User(1L, "1abc23", "john",
+        User duplicateUser = new User("1abc23", "john",
                 "John", "Doe", "john@email.com",
                 LocalDate.of(1990, 1, 15),
                 "www.foto.url", new ArrayList<>());
@@ -185,13 +187,13 @@ public class UserServiceTest {
 
     @Test
     void getUserByIdTrue() {
-        User user = new User(1L, "1abc23", "john", "John", "Doe", "john" +
+        User user = new User("1abc23", "john", "John", "Doe", "john" +
                 "@email" +
                 ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
                 new ArrayList<>());
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(),
+        UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(), user.getCreatedAt(), user.getUpdatedAt(),
                 user.getUsername(),
                 user.getKeycloakId(),
                 user.getEmail(),
@@ -223,7 +225,7 @@ public class UserServiceTest {
 
     @Test
     void deleteUserTrue() {
-        User existingUser = new User(1L, "1abc23", "john",
+        User existingUser = new User("1abc23", "john",
                 "John", "Doe", "john@email.com",
                 LocalDate.of(1990, 1, 15),
                 "www.foto.url", new ArrayList<>());
@@ -254,7 +256,7 @@ public class UserServiceTest {
     @Test
     void succesfullyCreateUser(){
 
-        User user = new User(1L, "1abc23", "john", "John", "Doe", "john" +
+        User user = new User("1abc23", "john", "John", "Doe", "john" +
                 "@email" +
                 ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
                 new ArrayList<>());
@@ -271,6 +273,8 @@ public class UserServiceTest {
 
         UserResponseDTO userDto = new UserResponseDTO(
                 user.getId(),
+                user.getCreatedAt(),
+                user.getUpdatedAt(),
                 user.getUsername(),
                 user.getKeycloakId(),
                 user.getEmail(),
@@ -291,7 +295,7 @@ public class UserServiceTest {
         when(userMapper.toEntity(userRequestDTO)).thenReturn(user);
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDTO(user)).thenReturn(userDto);
-        when(keycloakService.createUser(userRequestDTO)).thenReturn(kcUserResponseDTO);
+        when(keycloakServiceImpl.createUser(userRequestDTO)).thenReturn(kcUserResponseDTO);
 
         UserResponseDTO response = userService.createUser(userRequestDTO);
 
@@ -323,7 +327,7 @@ public class UserServiceTest {
 
     @Test
     void succesfullyGetPets(){
-        User user = new User(1L, "1abc23", "john", "John", "Doe", "john" +
+        User user = new User("1abc23", "john", "John", "Doe", "john" +
                 "@email" +
                 ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
                 new ArrayList<>());
@@ -331,16 +335,16 @@ public class UserServiceTest {
         Pet pet = new Pet();
         pet.setId(1L);
         pet.setName("Apolo");
-        pet.setSpecies("Dog");
+        pet.setSpecies(Species.DOG);
         pet.setHeight(30);
-        pet.setWeight(10.0);
+        pet.setWeight(BigDecimal.valueOf(10.0));
 
         Pet pet2 = new Pet();
         pet.setId(2L);
         pet.setName("Mike");
-        pet.setSpecies("Cat");
+        pet.setSpecies(Species.CAT);
         pet.setHeight(20);
-        pet.setWeight(5.0);
+        pet.setWeight(BigDecimal.valueOf(5.0));
 
 
         user.getPets().add(pet);
@@ -350,6 +354,8 @@ public class UserServiceTest {
 
         PetResponseDTO petResponse1 = new PetResponseDTO(
                 pet.getId(),
+                pet.getCreatedAt(),
+                pet.getUpdatedAt(),
                 pet.getName(),
                 pet.getGender(),
                 pet.getAge(),
@@ -357,12 +363,13 @@ public class UserServiceTest {
                 pet.getBreed(),
                 pet.getSpecies(),
                 pet.getHeight(),
-                pet.getDateOfBirth(),
                 pet.getPhotoUrl()
         );
 
         PetResponseDTO petResponse2 = new PetResponseDTO(
                 pet2.getId(),
+                pet2.getCreatedAt(),
+                pet2.getUpdatedAt(),
                 pet2.getName(),
                 pet2.getGender(),
                 pet2.getAge(),
@@ -370,7 +377,6 @@ public class UserServiceTest {
                 pet2.getBreed(),
                 pet2.getSpecies(),
                 pet2.getHeight(),
-                pet2.getDateOfBirth(),
                 pet2.getPhotoUrl()
         );
 
@@ -403,7 +409,6 @@ public class UserServiceTest {
     void succesfullyUpdateUser() {
         // Arrange: Configuração do Usuário e DTOs
         User user = new User(
-                1L,
                 "1abc23",
                 "john",
                 "John",
@@ -432,6 +437,8 @@ public class UserServiceTest {
 
         UserResponseDTO userResponseDTO = new UserResponseDTO(
                 user.getId(),
+                user.getCreatedAt(),
+                user.getUpdatedAt(),
                 kcUserResponseDTO.username(),
                 kcUserResponseDTO.id(),
                 kcUserResponseDTO.email(),
@@ -443,7 +450,7 @@ public class UserServiceTest {
 
         // Mock: Simulação dos Comportamentos
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(keycloakService.updateUser(user.getKeycloakId(), userRequestDTO)).thenReturn(kcUserResponseDTO);
+        when(keycloakServiceImpl.updateUser(user.getKeycloakId(), userRequestDTO)).thenReturn(kcUserResponseDTO);
         doAnswer(invocation -> {
             // Atualiza o usuário local com os dados retornados do Keycloak
             user.setUsername(kcUserResponseDTO.username());
@@ -462,7 +469,7 @@ public class UserServiceTest {
 
         // Assert: Verificação dos Resultados
         verify(userRepository, times(1)).findById(1L);
-        verify(keycloakService, times(1)).updateUser(user.getKeycloakId(), userRequestDTO);
+        verify(keycloakServiceImpl, times(1)).updateUser(user.getKeycloakId(), userRequestDTO);
         verify(userMapper, times(1)).updateEntityFromDTO(userRequestDTO, user);
         verify(userRepository, times(1)).save(user);
         verify(userMapper, times(1)).toResponseDTO(user);
