@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -42,7 +43,7 @@ public class PetRequestDTO {
 
     @Schema(description = "Pet's breed", example = "Yorkshire")
     @Valid
-    @NotBlank
+    @Size(min=1, message = "Pet's breed can't be empty")
     private String breed;
 
     @Schema(description = "Pet's height (cm)", example = "30")
@@ -51,8 +52,8 @@ public class PetRequestDTO {
     private Integer height;
 
     @Schema(description = "Pet's photo", example = "www.foto.com")
+    @Size(min=1, message = "Photo url can't be empty")
     @Valid
-    @NotBlank
     private String photoUrl;
 
     @Schema(description = "Pet's owner id", example = "1")
