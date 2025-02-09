@@ -4,6 +4,7 @@ import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetUpdateRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
@@ -47,7 +48,7 @@ public class PetService {
         return petMapper.toDTOList(pets);
     }
 
-    public PetResponseDTO updatePet(Long id, PetRequestDTO petRequestDTO) {
+    public PetResponseDTO updatePet(Long id, PetUpdateRequestDTO petRequestDTO) {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo");
         }

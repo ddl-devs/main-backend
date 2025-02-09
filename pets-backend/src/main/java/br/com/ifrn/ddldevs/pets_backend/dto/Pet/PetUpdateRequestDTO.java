@@ -5,20 +5,19 @@ import br.com.ifrn.ddldevs.pets_backend.domain.Enums.Species;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "DTO para requisições de Pets")
-public class PetRequestDTO {
-
+@Schema(description = "DTO para atualização de Pets")
+public class PetUpdateRequestDTO {
     @Schema(description = "Pet's name", example = "Apolo")
     @Valid
-    @NotNull
-    @NotBlank
+    @Size(min=1, message = "Pet's name can't be empty")
     private String name;
 
     @Schema(description = "Pet's sex", example = "MALE")
@@ -26,6 +25,7 @@ public class PetRequestDTO {
     private Gender gender;
 
     @Schema(description = "Pet's age", example = "2")
+    @Valid
     @Min(0)
     private Integer age;
 
@@ -35,8 +35,6 @@ public class PetRequestDTO {
     private BigDecimal weight;
 
     @Schema(description = "Pet's species")
-    @Valid
-    @NotNull(message = "Pet's species is required!")
     private Species species;
 
     @Schema(description = "Pet's breed", example = "Yorkshire")
@@ -54,8 +52,4 @@ public class PetRequestDTO {
     @Valid
     private String photoUrl;
 
-    @Schema(description = "Pet's owner id", example = "1")
-    @Valid
-    @NotNull(message = "Owner's id is mandatory")
-    private Long userId;
 }

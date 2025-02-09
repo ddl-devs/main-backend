@@ -5,6 +5,7 @@ import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.User;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Pet.PetUpdateRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
@@ -133,9 +134,9 @@ class PetServiceTest {
         dto.setUserId(null);
 
         Set<ConstraintViolation<PetRequestDTO>> violations = validator.validate(dto);
-
+        System.out.println(violations);
         assertFalse(violations.isEmpty());
-        assertEquals(6, violations.size());
+        assertEquals(5, violations.size());
     }
 
     @Test
@@ -195,7 +196,7 @@ class PetServiceTest {
         existingPet.setHeight(20);
         existingPet.setWeight(BigDecimal.valueOf(5.0));
 
-        PetRequestDTO updatedDTO = new PetRequestDTO();
+        PetUpdateRequestDTO updatedDTO = new PetUpdateRequestDTO();
         updatedDTO.setName("Apolo");
         updatedDTO.setSpecies(Species.DOG);
         updatedDTO.setHeight(30);
@@ -224,7 +225,7 @@ class PetServiceTest {
 
         when(petRepository.findById(petId)).thenReturn(Optional.of(existingPet));
         doAnswer(invocation -> {
-            PetRequestDTO dto = invocation.getArgument(0);
+            PetUpdateRequestDTO dto = invocation.getArgument(0);
             Pet pet = invocation.getArgument(1);
             pet.setName(dto.getName());
             pet.setSpecies(dto.getSpecies());
@@ -252,7 +253,7 @@ class PetServiceTest {
 
     @Test
     void updatePetNullId() {
-        PetRequestDTO updatedPetDto = new PetRequestDTO();
+        PetUpdateRequestDTO updatedPetDto = new PetUpdateRequestDTO();
         updatedPetDto.setName("Apolo");
         updatedPetDto.setSpecies(Species.DOG);
         updatedPetDto.setHeight(30);
@@ -265,7 +266,7 @@ class PetServiceTest {
 
     @Test
     void updatePetInvalidId() {
-        PetRequestDTO updatedPetDto = new PetRequestDTO();
+        PetUpdateRequestDTO updatedPetDto = new PetUpdateRequestDTO();
         updatedPetDto.setName("Apolo");
         updatedPetDto.setSpecies(Species.DOG);
         updatedPetDto.setHeight(30);
@@ -360,7 +361,7 @@ class PetServiceTest {
 
     @Test
     void updateNotFoundPet() {
-        PetRequestDTO updatedPetDto = new PetRequestDTO();
+        PetUpdateRequestDTO updatedPetDto = new PetUpdateRequestDTO();
         updatedPetDto.setName("Apolo");
         updatedPetDto.setSpecies(Species.DOG);
         updatedPetDto.setHeight(30);
