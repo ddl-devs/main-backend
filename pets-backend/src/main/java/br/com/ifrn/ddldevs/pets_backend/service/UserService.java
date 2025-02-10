@@ -33,12 +33,24 @@ public class UserService {
     @Autowired
     private PetMapper petMapper;
 
+    @Autowired
+    private UploadImageService uploadImageService;
+
+
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO dto) {
         KcUserResponseDTO keycloakUser = keycloakServiceImpl.createUser(dto);
 
         User user = userMapper.toEntity(dto);
         user.setKeycloakId(keycloakUser.id());
+
+        String imgUrl = null;
+
+        if (dto.photoUrl() != null) {
+            imgUrl = uploadImageService.uploadImg(dto.photoUrl());
+        }
+
+        user.setPhotoUrl(imgUrl);
 
         userRepository.save(user);
         return userMapper.toResponseDTO(user);
@@ -79,6 +91,11 @@ public class UserService {
         keycloakServiceImpl.updateUser(user.getKeycloakId(), dto);
 
         userMapper.updateEntityFromDTO(dto, user);
+
+        if (dto.photoUrl() != null) {
+            String imgUrl = uploadImageService.uploadImg(dto.photoUrl());
+            user.setPhotoUrl(imgUrl);
+        }
 
         var updatedUser = userRepository.save(user);
 

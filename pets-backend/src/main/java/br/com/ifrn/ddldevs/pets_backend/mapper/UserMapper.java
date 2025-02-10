@@ -14,11 +14,13 @@ public interface UserMapper {
     UserResponseDTO toResponseDTO(User user);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "photoUrl", ignore = true)
     User toEntity(UserRequestDTO dto);
 
     List<UserResponseDTO> toDTOList(List<User> users);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "photoUrl", ignore = true)
     void updateEntityFromDTO(UserUpdateRequestDTO dto, @MappingTarget User user);
 }
