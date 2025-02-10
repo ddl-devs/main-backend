@@ -13,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,8 +37,18 @@ class PetAnalysisServiceTest {
     @Mock
     private PetAnalysisMapper petAnalysisMapper;
 
+    @Mock
+    private UploadImageService uploadImageService;
+
     @InjectMocks
     private PetAnalysisService petAnalysisService;
+
+    private final MultipartFile mockImage = new MockMultipartFile(
+        "photoUrl",
+            "image.jpg",
+            "image/jpeg",
+            "content".getBytes()
+    );
 
     @BeforeEach
     void setUp() {
@@ -48,7 +60,7 @@ class PetAnalysisServiceTest {
         Pet pet = new Pet();
         pet.setId(1L);
 
-        PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(1L, "http://example.com/picture.jpg", "Healthy", "Blood Test");
+        PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(1L, mockImage, "Healthy", "Blood Test");
         PetAnalysis petAnalysis = new PetAnalysis();
         PetAnalysisResponseDTO responseDTO = new PetAnalysisResponseDTO(1L, LocalDateTime.now(),  LocalDateTime.now(),"http://example.com/picture.jpg", "Healthy", "Blood Test");
 
@@ -70,7 +82,7 @@ class PetAnalysisServiceTest {
 
     @Test
     void createPetAnalysisWithInvalidPet() {
-        PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(-1L, "http://example.com/picture.jpg", "Healthy", "Blood Test");
+        PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(-1L, mockImage, "Healthy", "Blood Test");
 
         when(petRepository.findById(999L)).thenReturn(Optional.empty());
 
@@ -83,7 +95,7 @@ class PetAnalysisServiceTest {
 
     @Test
     void createPetAnalysisWithNullPet() {
-        PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(-1L, "http://example.com/picture.jpg", "Healthy", "Blood Test");
+        PetAnalysisRequestDTO requestDTO = new PetAnalysisRequestDTO(-1L, mockImage, "Healthy", "Blood Test");
 
         assertThrows(IllegalArgumentException.class,
                 () -> petAnalysisService.createPetAnalysis(requestDTO),

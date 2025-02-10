@@ -44,7 +44,6 @@ public class PetService {
 
         if (petRequestDTO.getPhotoUrl() != null) {
             imgUrl = uploadImageService.uploadImg(petRequestDTO.getPhotoUrl());
-
         }
 
         pet.setPhotoUrl(imgUrl);

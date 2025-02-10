@@ -14,6 +14,7 @@ public interface PetAnalysisMapper {
 
     @Mapping(target = "pet", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "picture", ignore = true)
     PetAnalysis toEntity(PetAnalysisRequestDTO petAnalysisRequestDTO);
 
     List<PetAnalysisResponseDTO> toResponseList(List<PetAnalysis> petAnalyses);

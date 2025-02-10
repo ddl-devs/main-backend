@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class PetAnalysisRequestDTO {
 
     @NotNull
     @Schema(description = "Picture URL", example = "http://example.com/pet-analysis/picture.jpg")
-    private String picture;
+    private MultipartFile picture;
 
     @NotNull
     @Schema(description = "Result of the Analysis", example = "Healthy")
