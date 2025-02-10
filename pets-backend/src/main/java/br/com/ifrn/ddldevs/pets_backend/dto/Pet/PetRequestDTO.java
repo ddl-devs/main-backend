@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -50,9 +51,8 @@ public class PetRequestDTO {
     private Integer height;
 
     @Schema(description = "Pet's photo", example = "www.foto.com")
-    @Size(min=1, message = "Photo url can't be empty")
     @Valid
-    private String photoUrl;
+    private MultipartFile photoUrl;
 
     @Schema(description = "Pet's owner id", example = "1")
     @Valid

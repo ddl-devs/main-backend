@@ -23,7 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -48,10 +51,20 @@ class PetServiceTest {
     @Mock
     private PetMapper petMapper;
 
+    @Mock
+    private UploadImageService uploadImageService;
+
     @InjectMocks
     private PetService petService;
 
     private Validator validator;
+
+    private final MultipartFile mockImage = new MockMultipartFile(
+        "photoUrl",
+        "image.jpg",
+        "image/jpeg",
+        "content".getBytes()
+    );
 
     public PetServiceTest() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

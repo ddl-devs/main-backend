@@ -15,6 +15,7 @@ public interface PetMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "photoUrl", ignore = true)
     Pet toEntity(PetRequestDTO petRequestDTO);
 
     List<PetResponseDTO> toDTOList(List<Pet> pets);
@@ -22,5 +23,6 @@ public interface PetMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "photoUrl", ignore = true)
     void updateEntityFromDTO(PetUpdateRequestDTO petRequestDTO, @MappingTarget Pet pet);
 }

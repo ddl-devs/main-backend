@@ -8,6 +8,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 @Data
@@ -48,8 +49,7 @@ public class PetUpdateRequestDTO {
     private Integer height;
 
     @Schema(description = "Pet's photo", example = "www.foto.com")
-    @Size(min=1, message = "Photo url can't be empty")
     @Valid
-    private String photoUrl;
+    private MultipartFile photoUrl;
 
 }
