@@ -57,15 +57,15 @@ class PetControllerTest {
         petRepository.deleteAll();
         userRepository.deleteAll();
 
-        User new_user = new User();
-        new_user.setUsername("jhon");
-        new_user.setFirstName("Jhon");
-        new_user.setLastName("Doe");
-        new_user.setEmail("jhon@gmail.com");
-        new_user.setKeycloakId("345");
-        new_user.setPets(new ArrayList<>());
+        User newUser = new User();
+        newUser.setUsername("jhon");
+        newUser.setFirstName("Jhon");
+        newUser.setLastName("Doe");
+        newUser.setEmail("jhon@gmail.com");
+        newUser.setKeycloakId("345");
+        newUser.setPets(new ArrayList<>());
 
-        this.user = userRepository.save(new_user);
+        this.user = userRepository.save(newUser);
         userRepository.flush();
     }
 
@@ -82,7 +82,6 @@ class PetControllerTest {
         dto.setWeight(BigDecimal.valueOf(10.0));
 
         String requestBody = objectMapper.writeValueAsString(dto);
-        System.out.println(requestBody);
 
         mockMvc.perform(
                 post("/pets/")
@@ -162,12 +161,12 @@ class PetControllerTest {
 
         petRepository.save(pet);
 
-        String expected_response = objectMapper.writeValueAsString(petMapper.toPetResponseDTO(pet));
+        String expectedResponse = objectMapper.writeValueAsString(petMapper.toPetResponseDTO(pet));
 
         mockMvc.perform(
                 get("/pets/" + pet.getId())
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(expected_response));
+                .andExpect(MockMvcResultMatchers.content().json(expectedResponse));
     }
 
     @Test

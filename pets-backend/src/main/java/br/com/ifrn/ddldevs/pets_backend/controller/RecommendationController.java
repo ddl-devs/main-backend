@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +24,9 @@ public class RecommendationController {
 
     @PostMapping("/")
     @Operation(summary = "Create new recommendation")
-    public RecommendationResponseDTO createRecommendation(@Valid @RequestBody RecommendationRequestDTO recommendationRequestDTO) {
-        return recommendationService.createRecommendation(recommendationRequestDTO);
+    public ResponseEntity<RecommendationResponseDTO> createRecommendation(@Valid @RequestBody RecommendationRequestDTO recommendationRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(recommendationService.createRecommendation(recommendationRequestDTO));
     }
 
     @GetMapping("/")
@@ -39,8 +43,9 @@ public class RecommendationController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete recommendation by id")
-    public void deleteRecommendation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRecommendation(@PathVariable Long id) {
         recommendationService.deleteRecommendation(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("pet/{id}")
