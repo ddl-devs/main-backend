@@ -3,13 +3,12 @@ package br.com.ifrn.ddldevs.pets_backend.dto.PetAnalysis;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Schema(description = "Represents a request for Pet Analysis")
 public class PetAnalysisRequestDTO {
     @Schema(description = "Id of the Pet", example = "1")

@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,31 +23,32 @@ public class PetAnalysisController {
 
     @PostMapping("/")
     @Operation(summary = "Create new Pet Analysis")
-    public PetAnalysisResponseDTO createPetAnalysis(@Valid @RequestBody PetAnalysisRequestDTO petAnalysisRequestDTO) {
-        return petAnalysisService.createPetAnalysis(petAnalysisRequestDTO);
+    public ResponseEntity<PetAnalysisResponseDTO> createPetAnalysis(@Valid @RequestBody PetAnalysisRequestDTO petAnalysisRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(petAnalysisService.createPetAnalysis(petAnalysisRequestDTO));
     }
 
     @GetMapping("/")
     @Operation(summary = "List Pet Analyses")
-    public List<PetAnalysisResponseDTO> listPetAnalyses() {
-        return petAnalysisService.listPetAnalyses();
+    public ResponseEntity<List<PetAnalysisResponseDTO>> listPetAnalyses() {
+        return ResponseEntity.status(HttpStatus.OK).body(petAnalysisService.listPetAnalyses());
     }
 
     @GetMapping( "/{id}")
     @Operation(summary = "Get Pet Analysis by id")
-    public PetAnalysisResponseDTO getPetAnalysis(@PathVariable Long id) {
-        return petAnalysisService.getPetAnalysis(id);
+    public ResponseEntity<PetAnalysisResponseDTO> getPetAnalysis(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(petAnalysisService.getPetAnalysis(id));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete Pet Analysis by id")
-    public void deletePetAnalysis(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePetAnalysis(@PathVariable Long id) {
         petAnalysisService.deletePetAnalysis(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/pet/{id}")
     @Operation(summary = "Get Pet Analyses by pet id")
-    public List<PetAnalysisResponseDTO> getPetAnalysisByPetId(@PathVariable Long id) {
-        return petAnalysisService.getAllByPetId(id);
+    public ResponseEntity<List<PetAnalysisResponseDTO>> getPetAnalysisByPetId(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(petAnalysisService.getAllByPetId(id));
     }
 }

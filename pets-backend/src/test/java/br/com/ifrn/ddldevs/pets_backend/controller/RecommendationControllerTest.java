@@ -173,4 +173,35 @@ class RecommendationControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedResponse));
     }
+
+    @Test
+    @DisplayName("Should list pets sucessfully")
+    @Transactional
+    public void listPetsSuccessfully() throws Exception {
+        Recommendation recommendation = new Recommendation();
+        recommendation.setPet(this.pet);
+        recommendation.setRecommendation("Feed your pet twice daily");
+        recommendation.setCategoryRecommendation("Nutrition");
+        recommendation.setCreatedAt(LocalDateTime.now());
+        recommendation = recommendationRepository.save(recommendation);
+
+        Recommendation recommendation2 = new Recommendation();
+        recommendation2.setPet(this.pet);
+        recommendation2.setRecommendation("Feed your pet once daily");
+        recommendation2.setCategoryRecommendation("Nutrition");
+        recommendation2.setCreatedAt(LocalDateTime.now());
+        recommendation2 = recommendationRepository.save(recommendation2);
+
+        List<Recommendation> recommendationList = new ArrayList<>();
+        recommendationList.add(recommendation);
+        recommendationList.add(recommendation2);
+
+        String expectedResponse = objectMapper.writeValueAsString(recommendationMapper.toDTOList(recommendationList));
+
+        mockMvc.perform(
+                get("/recommendations/")
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(expectedResponse));
+
+    }
 }
