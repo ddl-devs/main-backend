@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+// represents the authenticated user within the API
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthUserDetails implements UserDetails {
 
     private String keycloakId;
-    private String email;
     private String username;
     private Collection<? extends GrantedAuthority> authorities;
 

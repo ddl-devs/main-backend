@@ -1,7 +1,7 @@
 package br.com.ifrn.ddldevs.pets_backend.controller;
 
-import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Recommendation.RecommendationRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Recommendation.RecommendationResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.security.AuthUserDetails;
 import br.com.ifrn.ddldevs.pets_backend.service.RecommendationService;
 import io.swagger.v3.oas.annotations.Operation;

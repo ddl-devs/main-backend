@@ -10,10 +10,11 @@ import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetAnalysisMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetAnalysisRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +46,9 @@ public class PetAnalysisService {
 
         PetAnalysis petAnalysis = petAnalysisMapper.toEntity(petAnalysisRequestDTO);
         Pet pet = petRepository.findById(petAnalysisRequestDTO.getPetId())
-            .orElseThrow(() -> new RuntimeException("Pet not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado!"));
 
-        throwErrorIfPetBelongsToAnotherUser(pet, loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(pet, loggedUserKeycloakId);
 
         petAnalysis.setPet(pet);
         pet.getPetAnalysis().add(petAnalysis);
@@ -75,7 +76,7 @@ public class PetAnalysisService {
             throw new ResourceNotFoundException("Análise não encontrada");
         });
 
-        throwErrorIfPetBelongsToAnotherUser(petAnalysis.getPet(), loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(petAnalysis.getPet(), loggedUserKeycloakId);
 
         petAnalysisRepository.deleteById(id);
     }
@@ -93,7 +94,7 @@ public class PetAnalysisService {
         Pet pet = petRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado"));
 
-        throwErrorIfPetBelongsToAnotherUser(pet, loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(pet, loggedUserKeycloakId);
 
         return petAnalysisMapper.toResponseList(petAnalyses);
     }
@@ -106,14 +107,23 @@ public class PetAnalysisService {
             throw new IllegalArgumentException("ID não pode ser negativo");
         }
         PetAnalysis petAnalysis = petAnalysisRepository.findById(analysisId)
-            .orElseThrow(() -> new EntityNotFoundException("Pet Analysis not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Análise não encontrada"));
 
-        throwErrorIfPetBelongsToAnotherUser(petAnalysis.getPet(), loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(petAnalysis.getPet(), loggedUserKeycloakId);
 
         return petAnalysisMapper.toResponse(petAnalysis);
     }
 
-    private void throwErrorIfPetBelongsToAnotherUser(Pet pet, String loggedUserKeycloakId) {
+    private void validatePetOwnershipOrAdmin(Pet pet, String loggedUserKeycloakId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getAuthorities().stream()
+            .anyMatch(
+                grantedAuthority ->
+                    grantedAuthority.getAuthority().equals("ROLE_admin"))) {
+            return;
+        }
+
         if (!pet.getUser().getKeycloakId().equals(loggedUserKeycloakId)) {
             throw new AccessDeniedException(
                 "Você não pode acessar dados de pets de outros usuários!");

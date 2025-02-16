@@ -202,10 +202,16 @@ public class UserServiceTest {
 
     @Test
     void getUserByIdTrue() {
-        User user = new User("1abc23", "john", "John", "Doe", "john" +
-            "@email" +
-            ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
-            new ArrayList<>());
+        User user = new User(
+            "1abc23",
+            "john",
+            "John",
+            "Doe",
+            "john@email.com",
+            LocalDate.of(1990, 1, 15),
+            "www.foto.url",
+            new ArrayList<>()
+        );
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
         UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(), user.getCreatedAt(),
@@ -272,9 +278,14 @@ public class UserServiceTest {
     @Test
     void succesfullyCreateUser() {
 
-        User user = new User("1abc23", "john", "John", "Doe", "john" +
-            "@email" +
-            ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
+        User user = new User(
+            "1abc23",
+            "john",
+            "John",
+            "Doe",
+            "john@email.com",
+            LocalDate.of(1990, 1, 15),
+            "www.foto.url",
             new ArrayList<>());
 
         UserRequestDTO userRequestDTO = new UserRequestDTO(
@@ -343,10 +354,15 @@ public class UserServiceTest {
 
     @Test
     void succesfullyGetPets() {
-        User user = new User("1abc23", "john", "John", "Doe", "john" +
-            "@email" +
-            ".com", LocalDate.of(1990, 1, 15), "www.foto.url",
-            new ArrayList<>());
+        User user = new User(
+            "1abc23",
+            "john",
+            "John",
+            "Doe",
+            "john@email.com",
+            LocalDate.of(1990, 1, 15), "www.foto.url",
+            new ArrayList<>()
+        );
 
         Pet pet = new Pet();
         pet.setId(1L);
@@ -480,12 +496,18 @@ public class UserServiceTest {
         when(userMapper.toResponseDTO(user)).thenReturn(userResponseDTO);
 
         // Act: Chamada do Método a Ser Testado
-        UserResponseDTO response = userService.updateUser(1L, userRequestDTO, loggedUserKeycloakId);
+        UserResponseDTO response = userService.updateUser(
+            1L,
+            userRequestDTO,
+            loggedUserKeycloakId
+        );
 
         // Assert: Verificação dos Resultados
         verify(userRepository, times(1)).findById(1L);
-        verify(keycloakServiceImpl, times(1)).updateUser(user.getKeycloakId(), userRequestDTO);
-        verify(userMapper, times(1)).updateEntityFromDTO(userRequestDTO, user);
+        verify(keycloakServiceImpl, times(1))
+            .updateUser(user.getKeycloakId(), userRequestDTO);
+        verify(userMapper, times(1)).
+            updateEntityFromDTO(userRequestDTO, user);
         verify(userRepository, times(1)).save(user);
         verify(userMapper, times(1)).toResponseDTO(user);
 

@@ -9,9 +9,10 @@ import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
-import jakarta.ws.rs.NotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,9 +60,9 @@ public class PetService {
         }
 
         Pet pet = petRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Pet não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado!"));
 
-        throwErrorIfPetBelongsToAnotherUser(pet, loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(pet, loggedUserKeycloakId);
 
         petMapper.updateEntityFromDTO(petRequestDTO, pet);
         Pet petUpdated = petRepository.save(pet);
@@ -78,9 +79,9 @@ public class PetService {
         }
 
         Pet pet = petRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Pet não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado"));
 
-        throwErrorIfPetBelongsToAnotherUser(pet, loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(pet, loggedUserKeycloakId);
 
         return petMapper.toPetResponseDTO(pet);
     }
@@ -100,12 +101,21 @@ public class PetService {
             throw new ResourceNotFoundException("Pet não encontrado!");
         });
 
-        throwErrorIfPetBelongsToAnotherUser(pet, loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(pet, loggedUserKeycloakId);
 
         petRepository.deleteById(id);
     }
 
-    private void throwErrorIfPetBelongsToAnotherUser(Pet pet, String loggedUserKeycloakId) {
+    private void validatePetOwnershipOrAdmin(Pet pet, String loggedUserKeycloakId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getAuthorities().stream()
+            .anyMatch(
+                grantedAuthority ->
+                    grantedAuthority.getAuthority().equals("ROLE_admin"))) {
+            return;
+        }
+
         if (!pet.getUser().getKeycloakId().equals(loggedUserKeycloakId)) {
             throw new AccessDeniedException(
                 "Você não pode acessar dados de pets de outros usuários!");

@@ -2,8 +2,8 @@ package br.com.ifrn.ddldevs.pets_backend.service;
 
 import br.com.ifrn.ddldevs.pets_backend.domain.Pet;
 import br.com.ifrn.ddldevs.pets_backend.domain.Recommendation;
-import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationRequestDTO;
-import br.com.ifrn.ddldevs.pets_backend.dto.Recomendation.RecommendationResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Recommendation.RecommendationRequestDTO;
+import br.com.ifrn.ddldevs.pets_backend.dto.Recommendation.RecommendationResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.exception.AccessDeniedException;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.mapper.RecommendationMapper;
@@ -11,6 +11,8 @@ import br.com.ifrn.ddldevs.pets_backend.repository.PetRepository;
 import br.com.ifrn.ddldevs.pets_backend.repository.RecommendationRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +43,9 @@ public class RecommendationService {
 
         Recommendation recommendation = recommendationMapper.toEntity(recommendationRequestDTO);
         Pet pet = petRepository.findById(recommendationRequestDTO.getPetId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado!"));
 
-        throwErrorIfPetBelongsToAnotherUser(pet, loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(pet, loggedUserKeycloakId);
 
         recommendation.setPet(pet);
         pet.getRecommendations().add(recommendation);
@@ -68,9 +70,9 @@ public class RecommendationService {
         }
 
         Recommendation recommendation = recommendationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Recommendation not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Recomendação não encontrada!"));
 
-        throwErrorIfPetBelongsToAnotherUser(recommendation.getPet(), loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(recommendation.getPet(), loggedUserKeycloakId);
 
         return recommendationMapper.toRecommendationResponseDTO(recommendation);
     }
@@ -87,7 +89,7 @@ public class RecommendationService {
             throw new ResourceNotFoundException("Recomendação não encontrada!");
         });
 
-        throwErrorIfPetBelongsToAnotherUser(recommendation.getPet(), loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(recommendation.getPet(), loggedUserKeycloakId);
 
         recommendationRepository.deleteById(id);
     }
@@ -105,14 +107,23 @@ public class RecommendationService {
             throw new ResourceNotFoundException("Pet não encontrado!");
         });
 
-        throwErrorIfPetBelongsToAnotherUser(pet, loggedUserKeycloakId);
+        validatePetOwnershipOrAdmin(pet, loggedUserKeycloakId);
 
         List<Recommendation> recommendations = recommendationRepository.findAllByPetId(id);
 
         return recommendationMapper.toDTOList(recommendations);
     }
 
-    private void throwErrorIfPetBelongsToAnotherUser(Pet pet, String loggedUserKeycloakId) {
+    private void validatePetOwnershipOrAdmin(Pet pet, String loggedUserKeycloakId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getAuthorities().stream()
+            .anyMatch(
+                grantedAuthority ->
+                    grantedAuthority.getAuthority().equals("ROLE_admin"))) {
+            return;
+        }
+
         if (!pet.getUser().getKeycloakId().equals(loggedUserKeycloakId)) {
             throw new AccessDeniedException(
                 "Você não pode acessar dados de pets de outros usuários!");

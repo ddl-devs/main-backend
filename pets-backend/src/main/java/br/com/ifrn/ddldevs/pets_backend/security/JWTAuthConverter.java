@@ -15,8 +15,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.stereotype.Component;
 
-
+// transforms the JWT token received from Keycloak into a CustomAuthToken instance
 // see Jwt token roles in https://jwt.io/
+
 @Component
 public class JWTAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
@@ -38,7 +39,6 @@ public class JWTAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
         var authUserDetails = new AuthUserDetails(
             jwt.getClaimAsString("sub"),
-            jwt.getClaimAsString("email"),
             jwt.getClaimAsString("preferred_username"),
             authorities
         );
@@ -86,5 +86,4 @@ public class JWTAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
             .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
             .collect(Collectors.toSet());
     }
-
 }

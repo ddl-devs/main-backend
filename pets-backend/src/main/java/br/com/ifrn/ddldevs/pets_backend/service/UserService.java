@@ -12,9 +12,10 @@ import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakServiceImpl;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
 import br.com.ifrn.ddldevs.pets_backend.mapper.UserMapper;
 import br.com.ifrn.ddldevs.pets_backend.repository.UserRepository;
-import jakarta.ws.rs.NotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,7 +85,7 @@ public class UserService {
         User user = userRepository.findById(id).
             orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
 
-        throwIfLoggedUserIsDifferentFromUserResource(loggedUserKeycloakId, user);
+        validatePetOwnershipOrAdmin(loggedUserKeycloakId, user);
 
         keycloakServiceImpl.updateUser(user.getKeycloakId(), dto);
 
@@ -107,7 +108,7 @@ public class UserService {
             () -> new ResourceNotFoundException("Usuário não encontrado!")
         );
 
-        throwIfLoggedUserIsDifferentFromUserResource(loggedUserKeycloakId, user);
+        validatePetOwnershipOrAdmin(loggedUserKeycloakId, user);
 
         keycloakServiceImpl.deleteUser(user.getKeycloakId());
 
@@ -124,15 +125,24 @@ public class UserService {
 
     public List<PetResponseDTO> getPets(Long userId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+            .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
         return petMapper.toDTOList(user.getPets());
     }
 
-    public void throwIfLoggedUserIsDifferentFromUserResource(
+    public void validatePetOwnershipOrAdmin(
         String loggedPersonKeycloakId,
         User user
     ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getAuthorities().stream()
+            .anyMatch(
+                grantedAuthority ->
+                    grantedAuthority.getAuthority().equals("ROLE_admin"))) {
+            return;
+        }
+
         if (!user.getKeycloakId().equals(loggedPersonKeycloakId)) {
             throw new AccessDeniedException(
                 "Você não pode acessar dados de outros usuários!"
