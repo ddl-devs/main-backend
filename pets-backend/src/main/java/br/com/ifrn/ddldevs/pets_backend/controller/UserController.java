@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ public class UserController {
 
     @Operation(summary = "List users")
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<List<UserResponseDTO>> getUsers() {
         return ResponseEntity.ok(userService.listUsers());
     }
@@ -46,11 +48,9 @@ public class UserController {
 
     @Operation(summary = "Get user by id")
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(
-        @PathVariable Long id,
-        @AuthenticationPrincipal AuthUserDetails userDetails
-    ) {
-        return ResponseEntity.ok(userService.getUserById(id, userDetails.getKeycloakId()));
+    @PreAuthorize("hasAuthority('ROLE_admin')")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @Operation(summary = "Create new user")
@@ -89,10 +89,8 @@ public class UserController {
 
     @Operation(summary = "Get all pets of a user")
     @GetMapping("/{id}/pets")
-    public ResponseEntity<List<PetResponseDTO>> getPets(
-        @PathVariable Long id,
-        @AuthenticationPrincipal AuthUserDetails userDetails
-    ) {
-        return ResponseEntity.ok(userService.getPets(id, userDetails.getKeycloakId()));
+    @PreAuthorize("hasAuthority('ROLE_admin')")
+    public ResponseEntity<List<PetResponseDTO>> getPets(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getPets(id));
     }
 }

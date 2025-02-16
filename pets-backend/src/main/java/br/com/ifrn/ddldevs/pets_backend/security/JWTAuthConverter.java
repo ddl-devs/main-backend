@@ -29,8 +29,11 @@ public class JWTAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         Collection<GrantedAuthority> authorities = Stream.concat(
-            jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
-            extractResourceRoles(jwt).stream()
+            Stream.concat(
+                jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
+                extractResourceRoles(jwt).stream()
+            ),
+            extractRealmRoles(jwt).stream()
         ).collect(Collectors.toSet());
 
         var authUserDetails = new AuthUserDetails(
@@ -69,4 +72,19 @@ public class JWTAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
             .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
             .collect(Collectors.toSet());
     }
+
+    @SuppressWarnings("unchecked")
+    private Collection<? extends GrantedAuthority> extractRealmRoles(Jwt jwt) {
+        if (jwt.getClaim("realm_access") == null) {
+            return Set.of();
+        }
+
+        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+        Collection<String> realmRoles = (Collection<String>) realmAccess.get("roles");
+
+        return realmRoles.stream()
+            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+            .collect(Collectors.toSet());
+    }
+
 }

@@ -6,6 +6,7 @@ import br.com.ifrn.ddldevs.pets_backend.dto.User.UserRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserResponseDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.User.UserUpdateRequestDTO;
 import br.com.ifrn.ddldevs.pets_backend.dto.keycloak.KcUserResponseDTO;
+import br.com.ifrn.ddldevs.pets_backend.exception.AccessDeniedException;
 import br.com.ifrn.ddldevs.pets_backend.exception.ResourceNotFoundException;
 import br.com.ifrn.ddldevs.pets_backend.keycloak.KeycloakServiceImpl;
 import br.com.ifrn.ddldevs.pets_backend.mapper.PetMapper;
@@ -56,7 +57,7 @@ public class UserService {
         return userMapper.toResponseDTO(user);
     }
 
-    public UserResponseDTO getUserById(Long id, String loggedUserKeycloakId) {
+    public UserResponseDTO getUserById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo");
         }
@@ -66,8 +67,6 @@ public class UserService {
 
         User user = userRepository.findById(id).
             orElseThrow(() -> new ResourceNotFoundException("Usuário não existe"));
-
-        throwIfLoggedUserIsDifferentFromUserResource(loggedUserKeycloakId, user);
 
         return userMapper.toResponseDTO(user);
     }
@@ -123,11 +122,9 @@ public class UserService {
         return petMapper.toDTOList(user.getPets());
     }
 
-    public List<PetResponseDTO> getPets(Long userId, String loggedUserKeycloakId) {
+    public List<PetResponseDTO> getPets(Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
-
-        throwIfLoggedUserIsDifferentFromUserResource(loggedUserKeycloakId, user);
 
         return petMapper.toDTOList(user.getPets());
     }
@@ -137,8 +134,8 @@ public class UserService {
         User user
     ) {
         if (!user.getKeycloakId().equals(loggedPersonKeycloakId)) {
-            throw new ResourceNotFoundException(
-                "Usuário não encontrado"
+            throw new AccessDeniedException(
+                "Você não pode acessar dados de outros usuários!"
             );
         }
     }

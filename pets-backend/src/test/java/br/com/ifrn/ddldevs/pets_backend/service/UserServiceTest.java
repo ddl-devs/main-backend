@@ -217,7 +217,7 @@ public class UserServiceTest {
             user.getDateOfBirth(), user.getPhotoUrl());
         when(userMapper.toResponseDTO(user)).thenReturn(userResponseDTO);
 
-        UserResponseDTO userById = userService.getUserById(1L, loggedUserKeycloakId);
+        UserResponseDTO userById = userService.getUserById(1L);
 
         assertEquals(user.getId(), userById.id());
         assertNotNull(userById);
@@ -226,14 +226,14 @@ public class UserServiceTest {
     @Test
     void getUserByIdNullId() {
         assertThrows(IllegalArgumentException.class,
-            () -> userService.getUserById(null, loggedUserKeycloakId),
+            () -> userService.getUserById(null),
             "ID não pode ser nulo");
     }
 
     @Test
     void getUserByIdFalseInvalidId() {
         assertThrows(IllegalArgumentException.class,
-            () -> userService.getUserById(-1L, loggedUserKeycloakId),
+            () -> userService.getUserById(-1L),
             "ID não pode ser negativo");
     }
 
@@ -337,7 +337,7 @@ public class UserServiceTest {
         when(userRepository.existsById(1L)).thenReturn(false);
 
         assertThrows(NotFoundException.class,
-            () -> userService.getPets(-1L, loggedUserKeycloakId),
+            () -> userService.getPets(-1L),
             "Usuário não encontrado");
     }
 
@@ -400,7 +400,7 @@ public class UserServiceTest {
         petResponses.add(petResponse2);
 
         when(petMapper.toDTOList(user.getPets())).thenReturn(petResponses);
-        List<PetResponseDTO> response = userService.getPets(1L, loggedUserKeycloakId);
+        List<PetResponseDTO> response = userService.getPets(1L);
 
         verify(userRepository, times(1)).findById(1L);
         verify(petMapper, times(1)).toDTOList(user.getPets());
